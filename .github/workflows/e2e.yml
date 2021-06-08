@@ -41,7 +41,6 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: filter
         with:
-          base: HEAD
           ref: ${{steps.getcommit.outputs.sha}}
           filters: |
             frontend:
