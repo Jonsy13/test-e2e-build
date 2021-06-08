@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     # Set job outputs to values from filter step
     outputs:
-      changes-matrix: ${{ steps.filter.outputs.changes }}
+      changes-paths: ${{ steps.filter.outputs.changes }}
     steps:
       # For pull requests it's not necessary to checkout the code
       - uses: octokit/request-action@v2.x
@@ -30,11 +30,6 @@ jobs:
         env:
           response: ${{ steps.get_PR_commits.outputs.data }}
 
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{steps.getcommit.outputs.sha}}
-          fetch-depth: 0
-
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -50,12 +45,9 @@ jobs:
   image-build:
     needs: changes
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        changes: ${{ fromJSON(needs.changes.outputs.changes-matrix) }}
     steps:
       - name: Building Image
-        run: echo "${{ matrix.changes }}"
+        run: echo "${{ needs.changes.outputs.changed-paths }}"
 
   # tests:
   #   if: contains(github.event.comment.html_url, '/pull/') && startsWith(github.event.comment.body, '/run')
