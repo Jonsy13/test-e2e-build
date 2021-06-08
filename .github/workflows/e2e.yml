@@ -15,6 +15,11 @@ jobs:
       authentication: ${{ steps.filter.outputs.authentication }}
     steps:
       # For pull requests it's not necessary to checkout the code
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{steps.getcommit.outputs.sha}}
+          fetch-depth: 0
+
       - uses: dorny/paths-filter@v2
         id: filter
         with:
