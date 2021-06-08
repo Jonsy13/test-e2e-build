@@ -15,6 +15,24 @@ jobs:
       authentication: ${{ steps.filter.outputs.authentication }}
     steps:
       # For pull requests it's not necessary to checkout the code
+
+      - uses: octokit/request-action@v2.x
+        id: get_PR_commits
+        with:
+          route: GET /repos/:repo/pulls/:pull_number/commits
+          repo: ${{ github.repository }}
+          pull_number: ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: set commit to output
+        id: getcommit
+        run: |
+          prsha=$(echo $response | jq '.[-1].sha'  | tr -d '"')
+          echo "::set-output name=sha::$prsha"
+        env:
+          response: ${{ steps.get_PR_commits.outputs.data }}
+
       - uses: actions/checkout@v2
         with:
           ref: ${{steps.getcommit.outputs.sha}}
@@ -24,6 +42,7 @@ jobs:
         id: filter
         with:
           base: HEAD
+          ref: ${{steps.getcommit.outputs.sha}}
           filters: |
             frontend:
               - 'litmus-portal/frontend/**'
