@@ -30,6 +30,11 @@ jobs:
         env:
           response: ${{ steps.get_PR_commits.outputs.data }}
 
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{steps.getcommit.outputs.sha}}
+          fetch-depth: 0
+
       - uses: dorny/paths-filter@v2
         id: filter
         with:
