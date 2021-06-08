@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        changes: ${{ fromJSON(needs.changes.outputs.changes_matrix) }}
+        changes: ${{ fromJSON(needs.changes.outputs.changes-matrix) }}
     steps:
       - name: Building Image
         run: echo "${{ matrix.changes }}"
