@@ -32,6 +32,7 @@ jobs:
               - 'litmus-portal/authentication/**'
 
   image-build:
+    needs: changes
     runs-on: ubuntu-latest
     steps:
       - name: Building Image
