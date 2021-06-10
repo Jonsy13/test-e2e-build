@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// define the type of authorization request
+// define the type of authoriza
 var (
 	DefaultAPISecret           string = os.Getenv("JWT_SECRET")
 	DefaultUserName            string = os.Getenv("ADMIN_USERNAME")
