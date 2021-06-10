@@ -137,7 +137,7 @@ jobs:
         continue-on-error: false
         with:
           spec: cypress/integration/Basic_Setup/**/*.spec.js
-          working-directory: litmus-e2e/CypressE2E/
+          working-directory: litmus-e2e/Cypress/
           config-file: cypress.prod.json
 
       - name: Post Authentication Tests
@@ -145,7 +145,7 @@ jobs:
         continue-on-error: false
         with:
           spec: cypress/integration/Parallel_Tests/**/*.spec.js
-          working-directory: litmus-e2e/CypressE2E
+          working-directory: litmus-e2e/Cypress/
           config-file: cypress.prod.json
 
       - name: Check the test run
