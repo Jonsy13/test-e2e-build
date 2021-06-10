@@ -71,6 +71,11 @@ jobs:
           ./.github/filter_and_build.sh
         env:
           directory: ${{ matrix.path }}
+      - name: upload docker artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.path }}
+          path: Images
 
   # tests:
   #   needs: [find-commit, changes]
