@@ -10,7 +10,7 @@ getStarted:
     name: projectName
     label: Project Name
     info: Set your project name
-    desc: Choose an appropriag with your team members.
+    desc: Choose an appropriate name for your project. This project name will be used when collaborating with your team members.
   password:
     name: password
     label: Password
@@ -751,6 +751,10 @@ createWorkflow:
       edit: Edit workflow name
       cancel: Cancel
       save: Save
+    noMyHub: No MyHub selected
+    selectHub: Select a hub and continue with a pre-defined workflow
+    noPredefined: No Pre-defined experiments present
+    addPredefined: Add a pre-defined workflow to continue scheduling.
   reliabilityScore:
     header: Adjust the weights of the experiments in the workflow
     info: You have selected
