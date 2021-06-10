@@ -78,7 +78,7 @@ jobs:
           path: Images
 
   tests:
-    needs: [find-commit, changes]
+    needs: [find-commit, image-build]
     runs-on: ubuntu-20.04
     steps:
       - name: upload docker artifacts
