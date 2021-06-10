@@ -7,7 +7,7 @@ on:
 
 jobs:
   # Job for finding last commit sha of pull-request
-  find-commit:
+  find-latest-commit-sha:
     runs-on: ubuntu-latest
     outputs:
       commit-sha: ${{ steps.getcommit.outputs.sha }}
@@ -29,9 +29,9 @@ jobs:
         env:
           response: ${{ steps.get_PR_commits.outputs.data }}
 
-  changes:
+  find-changes:
     runs-on: ubuntu-latest
-    needs: find-commit
+    needs: find-latest-commit-sha
     # Set job outputs to values from filter step
     outputs:
       changed-paths: ${{ steps.filter.outputs.changes }}
@@ -39,13 +39,13 @@ jobs:
       # For pull requests it's not necessary to checkout the code
       - uses: actions/checkout@v2
         with:
-          ref: ${{ needs.find-commit.outputs.commit-sha }}
+          ref: ${{ needs.find-latest-commit-sha.outputs.commit-sha }}
           fetch-depth: 0
 
       - uses: dorny/paths-filter@v2
         id: filter
         with:
-          ref: ${{ needs.find-commit.outputs.commit-sha }}
+          ref: ${{ needs.find-latest-commit-sha.outputs.commit-sha }}
           filters: |
             frontend:
               - 'litmus-portal/frontend/**'
@@ -54,23 +54,25 @@ jobs:
             authentication:
               - 'litmus-portal/authentication/**'
 
-  image-build:
+  docker-build-image:
     runs-on: ubuntu-latest
-    needs: [find-commit, changes]
+    needs: [find-latest-commit-sha, find-changes]
     strategy:
       matrix:
-        path: ${{ fromJSON(needs.changes.outputs.changed-paths) }}
+        path: ${{ fromJSON(needs.find-changes.outputs.changed-paths) }}
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ needs.find-commit.outputs.commit-sha }}
+          ref: ${{ needs.find-latest-commit-sha.outputs.commit-sha }}
           fetch-depth: 0
+
       - name: Building Docker-Image for ${{ matrix.path }}
         run: |
           chmod 755 ./.github/filter_and_build.sh
           ./.github/filter_and_build.sh
         env:
           directory: ${{ matrix.path }}
+
       - name: upload docker artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -78,10 +80,10 @@ jobs:
           path: Images
 
   tests:
-    needs: [find-commit, image-build]
+    needs: [docker-build-image]
     runs-on: ubuntu-20.04
     steps:
-      - name: Checkout E2E Repository
+      - name: Checkout litmus-E2E Repository
         uses: actions/checkout@v2
         with:
           repository: litmuschaos/litmus-e2e
@@ -126,11 +128,12 @@ jobs:
           kubectl wait --for=condition=Ready pods --all --namespace litmus --timeout=120s
 
       - name: Getting the ENV variables for using while testing
-        if: startsWith(github.event.comment.body, '/run-e2e')
         run: |
-          export frontendPodName=$(kubectl get pods -l component=litmusportal-frontend --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' -n litmus)
-          export frontendPodPort=$(kubectl get pod $frontendPodName --template='{{(index (index .spec.containers 0).ports 0).containerPort}}{{"\n"}}' --namespace litmus)
-          kubectl port-forward $frontendPodName -n litmus 3001:$frontendPodPort &
+          export NODE_NAME=$(kubectl -n litmus get pod  -l "component=litmusportal-frontend" -o=jsonpath='{.items[*].spec.nodeName}')
+          export NODE_IP=$(kubectl -n litmus get nodes $NODE_NAME -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}')
+          export NODE_PORT=$(kubectl -n litmus get -o jsonpath="{.spec.ports[0].nodePort}" services litmusportal-frontend-service)
+          export AccessURL="http://$NODE_IP:$NODE_PORT"
+          echo "URL=$AccessURL" >> $GITHUB_ENV
 
       - name: Portal Authentication Tests
         uses: cypress-io/github-action@v2
@@ -139,6 +142,9 @@ jobs:
           spec: cypress/integration/Basic_Setup/**/*.spec.js
           working-directory: litmus-e2e/Cypress/
           config-file: cypress.prod.json
+          env: true
+        env:
+          CYPRESS_BASE_URL: ${{ env.URL }}
 
       - name: Post Authentication Tests
         uses: cypress-io/github-action@v2
@@ -147,9 +153,11 @@ jobs:
           spec: cypress/integration/Parallel_Tests/**/*.spec.js
           working-directory: litmus-e2e/Cypress/
           config-file: cypress.prod.json
+          env: true
+        env:
+          CYPRESS_BASE_URL: ${{ env.URL }}
 
       - name: Check the test run
-        if: startsWith(github.event.comment.body, '/run-e2e')
         run: |
           echo "TEST_RUN=true" >> $GITHUB_ENV
 
@@ -190,15 +198,4 @@ jobs:
           RUN_ID: ${{ github.run_id }}
 
       - name: Deleting KinD cluster
-        if: startsWith(github.event.comment.body, '/run-e2e')
         run: kind delete cluster
-
-  merge:
-    if: contains(github.event.comment.html_url, '/pull/') && startsWith(github.event.comment.body, '/merge')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Add a merge label when all jobs are passed
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          labels: merge

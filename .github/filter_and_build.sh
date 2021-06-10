@@ -9,4 +9,3 @@ current_dir=$(echo "$working_dir/$directory")
 mkdir Images
 docker build $current_dir -t litmuschaos/${MYMAP[$directory]} -f $working_dir/${directory}/Dockerfile
 docker save "litmuschaos/${MYMAP[$directory]}" > Images/${directory}.tar
-ls
