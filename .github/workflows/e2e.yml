@@ -81,8 +81,8 @@ jobs:
     needs: [find-commit, image-build]
     runs-on: ubuntu-20.04
     steps:
-      - name: upload docker artifacts
-        uses: actions/upload-artifact@v2
+      - name: download docker artifacts
+        uses: actions/download-artifact@v2
         with:
           name: Docker-Images
           path: Images
