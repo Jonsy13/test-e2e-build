@@ -81,58 +81,51 @@ jobs:
     needs: [find-commit, image-build]
     runs-on: ubuntu-20.04
     steps:
+      - name: Notification for Starting Testing.
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          comment-id: "${{ github.event.comment.id }}"
+          body: |
+            ****
+            **Test Status:** The testing has been started please wait for the results ...
+
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.find-commit.outputs.commit-sha }}
+          fetch-depth: 0
+
+      - name: Setting up KinD Cluster
+        uses: engineerd/setup-kind@v0.5.0
+        with:
+          version: "v0.9.0"
+
+      - name: Configuring and Testing the Cluster Installation
+        run: |
+          kubectl cluster-info --context kind-kind
+          kind get kubeconfig --internal >$HOME/.kube/config
+          kubectl get nodes
+          kubectl get pods -n kube-system
+
       - name: download docker artifacts
         uses: actions/download-artifact@v2
         with:
           name: Docker-Images
           path: Images
 
-      - name: load the images
+      - name: loading the docker build artifacts into KIND Cluster
         run: |
           cd Images
-          ls -1 *.tar | xargs --no-run-if-empty -L 1 docker load -i
-          docker image ls -a
+          ls -1 *.tar | xargs --no-run-if-empty -L 1 kind load image-archive
 
-      # - name: Notification for Starting Testing.
-      #   uses: peter-evans/create-or-update-comment@v1
-      #   with:
-      #     comment-id: "${{ github.event.comment.id }}"
-      #     body: |
-      #       ****
-      #       **Test Status:** The testing has been started please wait for the results ...
-
-      # - uses: actions/checkout@v2
-      #   with:
-      #     ref: ${{ needs.find-commit.outputs.commit-sha }}
-      #     fetch-depth: 0
-
-      # - name: Setting up KinD Cluster
-      #   if: startsWith(github.event.comment.body, '/run-e2e')
-      #   uses: engineerd/setup-kind@v0.5.0
-      #   with:
-      #     version: "v0.7.0"
-
-      # - name: Configuring and Testing the Cluster Installation
-      #   if: startsWith(github.event.comment.body, '/run-e2e')
-      #   run: |
-      #     kubectl cluster-info --context kind-kind
-      #     kind get kubeconfig --internal >$HOME/.kube/config
-      #     kubectl get nodes
-      #     kubectl get pods -n kube-system
-
-      # - name: Loading images build from Pull-request
-      #   run: |
-      #   env:
-
-      # - name: Deploying the litmus-portal for E2E testing
-      #   if: startsWith(github.event.comment.body, '/run-e2e')
-      #   run: |
-      #     wget https://raw.githubusercontent.com/litmuschaos/litmus/master/litmus-portal/cluster-k8s-manifest.yml
-      #     sed -i 's/Always/IfNotPresent/g' cluster-k8s-manifest.yml
-      #     kubectl apply -f cluster-k8s-manifest.yml
-      #     kubectl get pods -n litmus
-      #     kubectl get deployments -o wide -n litmus
-      #     kubectl wait --for=condition=Ready pods --all --namespace litmus --timeout=120s
+      - name: Deploying the litmus-portal for E2E testing
+        if: startsWith(github.event.comment.body, '/run-e2e')
+        run: |
+          wget https://raw.githubusercontent.com/litmuschaos/litmus/master/litmus-portal/cluster-k8s-manifest.yml
+          sed -i 's/Always/IfNotPresent/g' cluster-k8s-manifest.yml
+          kubectl apply -f cluster-k8s-manifest.yml
+          kubectl get pods -n litmus
+          kubectl get deployments -o wide -n litmus
+          kubectl wait --for=condition=Ready pods --all --namespace litmus --timeout=120s
 
       # - name: Getting the ENV variables for using while testing
       #   if: startsWith(github.event.comment.body, '/run-e2e')
