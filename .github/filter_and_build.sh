@@ -8,3 +8,4 @@ declare -A MYMAP=( [frontend]="litmusportal-frontend:ci" [graphql-server]="litmu
 current_dir=$(echo "$working_dir/$directory")
 docker build $current_dir -t litmuschaos/${MYMAP[$directory]} -f $working_dir/${directory}/Dockerfile
 docker save "litmuschaos/${MYMAP[$directory]}" > Images/${directory}.tar
+ls
