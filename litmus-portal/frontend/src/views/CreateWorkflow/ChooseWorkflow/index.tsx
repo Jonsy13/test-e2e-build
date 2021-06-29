@@ -14,7 +14,6 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { ChooseWorkflowRadio } from '../../../models/localforage/radioButton';
 import useActions from '../../../redux/actions';
 import * as AlertActions from '../../../redux/actions/alert';
 import * as WorkflowActions from '../../../redux/actions/workflow';
@@ -25,21 +24,21 @@ import SelectMyHub from './SelectMyHub';
 import useStyles from './styles';
 import UploadYAML from './uploadYAML';
 
-interface ChildRef {
-  onNext: () => void;
-}
-
 const ChooseWorkflow = forwardRef((_, ref) => {
   const classes = useStyles();
   const { t } = useTranslation();
   const alert = useActions(AlertActions);
   const [selected, setSelected] = useState<string>('');
+  const [id, setSelectedID] = useState<string | undefined>(undefined);
   const workflowDetails = useSelector(
     (state: RootState) => state.workflowManifest.manifest
   );
   const workflowAction = useActions(WorkflowActions);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelected(event.target.value);
+    localforage.setItem('selectedScheduleOption', {
+      selected: event.target.value,
+    });
     if (event.target.value === 'C' || event.target.value === 'D') {
       workflowAction.setWorkflowManifest({
         isCustomWorkflow: true,
@@ -51,10 +50,20 @@ const ChooseWorkflow = forwardRef((_, ref) => {
     }
   };
 
+  useEffect(() => {
+    workflowAction.setWorkflowManifest({ manifest: '' });
+  }, []);
+
   function onNext() {
     if (selected === '') {
       alert.changeAlertState(true); // No Workflow Type has been selected and user clicked on Next
       return false;
+    }
+    if (selected === 'A' || selected === 'B') {
+      if (id === undefined) {
+        alert.changeAlertState(true);
+        return false;
+      }
     }
     if (selected === 'D' && workflowDetails === '') {
       alert.changeAlertState(true);
@@ -64,16 +73,9 @@ const ChooseWorkflow = forwardRef((_, ref) => {
     return true;
   }
 
-  useEffect(() => {
-    localforage.getItem('selectedScheduleOption').then((value) => {
-      if (value) {
-        setSelected((value as ChooseWorkflowRadio).selected);
-      } else setSelected('');
-    });
-    workflowAction.setWorkflowManifest({
-      manifest: '',
-    });
-  }, []);
+  const pickedExperiment = (subExpNumber: string) => {
+    setSelectedID(subExpNumber);
+  };
 
   useImperativeHandle(ref, () => ({
     onNext,
@@ -117,7 +119,7 @@ const ChooseWorkflow = forwardRef((_, ref) => {
                 </span>
               </RadioButton>
             </AccordionSummary>
-            <ChoosePreDefinedExperiments />
+            <ChoosePreDefinedExperiments selectedExp={pickedExperiment} />
           </Accordion>
 
           <Accordion
@@ -138,7 +140,7 @@ const ChooseWorkflow = forwardRef((_, ref) => {
                 </span>
               </RadioButton>
             </AccordionSummary>
-            <ChooseWorkflowFromExisting />
+            <ChooseWorkflowFromExisting selectedExp={pickedExperiment} />
           </Accordion>
 
           <Accordion

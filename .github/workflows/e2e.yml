@@ -90,7 +90,7 @@ jobs:
       - name: Checkout litmus-E2E Repository
         uses: actions/checkout@v2
         with:
-          repository: litmuschaos/litmus-e2e
+          repository: ved432/testSetup
           path: litmus-e2e
 
       - name: Notification for Starting Testing.
@@ -129,7 +129,9 @@ jobs:
           kubectl apply -f cluster-k8s-manifest.yml
           kubectl get pods -n litmus
           kubectl get deployments -o wide -n litmus
-          kubectl wait --for=condition=Ready pods --all --namespace litmus --timeout=120s
+          source ./litmus-e2e/litmus/utils.sh
+          verify_all_components litmusportal-frontend,litmusportal-server litmus
+          kubectl wait --for=condition=Ready pods --all --namespace litmus --timeout=360s
 
       - name: Getting the ENV variables for using while testing
         run: |
@@ -150,6 +152,14 @@ jobs:
           env: true
         env:
           CYPRESS_BASE_URL: ${{ env.URL }}
+
+      - name: Verifying Execution Plane components
+        if: always()
+        run: |
+          source ./litmus-e2e/litmus/utils.sh
+          verify_all_components ${COMPONENTS} litmus
+        env:
+          COMPONENTS: subscriber,chaos-exporter,chaos-operator-ce,event-tracker,workflow-controller
 
       - name: Post Authentication Tests
         if: startsWith(github.event.comment.body, '/run-e2e')

@@ -57,6 +57,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   accordion: {
     border: 'none',
     boxShadow: 'none',
+    width: '100%',
     '& .MuiAccordionSummary-root': {
       marginLeft: '-1rem',
       border: 'none',
@@ -76,7 +77,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   // Accordion Expanded Body [Content]
   predefinedWorkflowDiv: {
     maxHeight: '15rem',
-    overflowY: 'scroll',
+    overflowY: 'auto',
     padding: theme.spacing(3, 0, 3, 0),
   },
   MuiAccordionroot: {
@@ -117,31 +118,36 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 
     '& #left-div': {
-      width: '15rem',
+      width: '15%',
       margin: theme.spacing(2),
     },
 
     '& #right-div': {
-      width: '30rem',
+      width: '30%',
       margin: theme.spacing(0, 4, 0, 4),
     },
     '& #last-div': {
-      width: '15rem',
-      margin: theme.spacing(0, 4, 0, 4),
+      width: '45%',
+      display: 'flex',
+      margin: theme.spacing(0, 2, 0, 2),
       position: 'relative',
     },
   },
   lastDivChildren: {
-    width: '60%',
-    position: 'absolute',
+    width: '10rem',
+    // position: 'absolute',
     display: 'flex',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    top: 14,
+    // top: 14,
   },
   templateIconBg: {
     height: 70,
-    marginLeft: theme.spacing(15),
+    marginLeft: '5%',
+  },
+  deleteButton: {
+    position: 'absolute',
+    right: 20,
   },
   experimentIcon: {
     width: '3rem',
@@ -239,7 +245,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   formControl: {
     minWidth: '9rem',
-    marginLeft: theme.spacing(1),
   },
   label: {
     color: theme.palette.common.black,
@@ -256,6 +261,18 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   noTemplatesDesc: {
     fontSize: '1rem',
+  },
+
+  errorText: {
+    marginLeft: theme.spacing(1.25),
+  },
+  errorBtn: {
+    backgroundColor: 'transparent !important',
+    color: theme.palette.primary.main,
+    marginLeft: theme.spacing(2.5),
+  },
+  retryText: {
+    marginLeft: theme.spacing(1.25),
   },
 }));
 
