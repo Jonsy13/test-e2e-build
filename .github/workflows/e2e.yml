@@ -131,7 +131,7 @@ jobs:
           kubectl get deployments -o wide -n litmus
           source ./litmus-e2e/litmus/utils.sh
           verify_all_components litmusportal-frontend,litmusportal-server litmus
-          kubectl wait --for=condition=Ready pods --all --namespace litmus --timeout=360s
+          wait_for_pods litmus 720
 
       - name: Getting the ENV variables for using while testing
         run: |
@@ -158,6 +158,7 @@ jobs:
         run: |
           source ./litmus-e2e/litmus/utils.sh
           verify_all_components ${COMPONENTS} litmus
+          wait_for_pods litmus 720
         env:
           COMPONENTS: subscriber,chaos-exporter,chaos-operator-ce,event-tracker,workflow-controller
 
