@@ -57,6 +57,7 @@ export interface WorkflowRun {
   resiliency_score?: number;
   experiments_passed?: number;
   total_experiments?: number;
+  isRemoved: boolean;
 }
 
 interface GetWorkflowRunsOutput {
@@ -106,11 +107,13 @@ export interface WorkflowRunFilterInput {
   cluster_name?: string;
   workflow_status?: WorkflowStatus;
   date_range?: DateRange;
+  isRemoved?: boolean | null;
 }
 
 export interface WorkflowDataVars {
   workflowRunsInput: {
     project_id: string;
+    workflow_ids?: string[];
     workflow_run_ids?: string[];
     pagination?: Pagination;
     sort?: SortInput;

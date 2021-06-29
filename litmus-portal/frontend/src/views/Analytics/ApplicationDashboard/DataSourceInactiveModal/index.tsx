@@ -2,10 +2,6 @@ import { Typography } from '@material-ui/core';
 import { ButtonOutlined, Modal } from 'litmus-ui';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  DASHBOARD_TYPE_1,
-  DASHBOARD_TYPE_2,
-} from '../../../../pages/ApplicationDashboard/constants';
 import useActions from '../../../../redux/actions';
 import * as DashboardActions from '../../../../redux/actions/dashboards';
 import { history } from '../../../../redux/configureStore';
@@ -17,16 +13,12 @@ import useStyles from './styles';
 
 interface DataSourceInactiveModalProps {
   dataSourceStatus: string;
-  dashboardType: string;
   dashboardID: string;
-  dashboardName: string;
 }
 
 const DataSourceInactiveModal: React.FC<DataSourceInactiveModalProps> = ({
   dataSourceStatus,
-  dashboardType,
   dashboardID,
-  dashboardName,
 }) => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -38,19 +30,7 @@ const DataSourceInactiveModal: React.FC<DataSourceInactiveModalProps> = ({
   return (
     <Modal
       open
-      onClose={() => {
-        history.goBack();
-      }}
-      modalActions={
-        <ButtonOutlined
-          className={classes.closeButton}
-          onClick={() => {
-            history.goBack();
-          }}
-        >
-          &#x2715;
-        </ButtonOutlined>
-      }
+      onClose={() => history.goBack()}
       width="60%"
       height="fit-content"
     >
@@ -66,16 +46,9 @@ const DataSourceInactiveModal: React.FC<DataSourceInactiveModalProps> = ({
         <div className={classes.flexButtons}>
           <ButtonOutlined
             onClick={() => {
-              let dashboardTemplateID: number = -1;
-              if (dashboardType === DASHBOARD_TYPE_1) {
-                dashboardTemplateID = 0;
-              } else if (dashboardType === DASHBOARD_TYPE_2) {
-                dashboardTemplateID = 1;
-              }
               dashboard.selectDashboard({
                 selectedDashboardID: dashboardID,
-                selectedDashboardName: dashboardName,
-                selectedDashboardTemplateID: dashboardTemplateID,
+                activePanelID: '',
               });
               history.push({
                 pathname: '/analytics/dashboard/configure',
@@ -98,12 +71,12 @@ const DataSourceInactiveModal: React.FC<DataSourceInactiveModalProps> = ({
             {t('analyticsDashboard.monitoringDashboardPage.or')}
           </Typography>
           <ButtonOutlined
-            onClick={() => {
+            onClick={() =>
               history.push({
                 pathname: '/analytics/datasource/configure',
                 search: `?projectID=${projectID}&projectRole=${projectRole}`,
-              });
-            }}
+              })
+            }
           >
             <img
               src="/icons/disconnected.svg"

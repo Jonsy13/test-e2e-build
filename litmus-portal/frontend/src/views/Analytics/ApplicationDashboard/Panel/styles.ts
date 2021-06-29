@@ -15,13 +15,15 @@ const useStyles = makeStyles((theme) => ({
     display: 'inline-block',
     background: theme.palette.background.paper,
     padding: theme.spacing(2, 2, 0, 2),
-    marginBottom: theme.spacing(1),
   },
 
   panelGroup: {
     display: 'flex',
     alignContent: 'left',
     background: theme.palette.cards.header,
+    boxShadow:
+      '0 0.3px 0.9px rgba(0, 0, 0, 0.1), 0 1.6px 3.6px rgba(0, 0, 0, 0.13)',
+    borderRadius: '3px 3px 0 0',
   },
 
   panelGroupContainer: {
@@ -30,8 +32,10 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.paper,
     display: 'grid',
     gridTemplateColumns: '49% 49%',
-    gridGap: theme.spacing(1.75),
+    gridGap: '0.875rem',
     padding: theme.spacing(1, 1, 1, 1.75),
+    boxShadow:
+      '0 0.3px 0.9px rgba(0, 0, 0, 0.1), 0 1.6px 3.6px rgba(0, 0, 0, 0.13)',
   },
 
   expand: {

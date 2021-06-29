@@ -27,7 +27,7 @@ import (
 	"github.com/litmuschaos/litmus/litmus-portal/graphql-server/pkg/myhub"
 	myHubOps "github.com/litmuschaos/litmus/litmus-portal/graphql-server/pkg/myhub/ops"
 	"github.com/litmuschaos/litmus/litmus-portal/graphql-server/pkg/project"
-	validate "github.com/litmuschaos/litmus/litmus-portal/graphql-server/pkg/rbac"
+	"github.com/litmuschaos/litmus/litmus-portal/graphql-server/pkg/usage"
 	"github.com/litmuschaos/litmus/litmus-portal/graphql-server/pkg/usermanagement"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -53,7 +53,7 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, user model.UpdateUser
 }
 
 func (r *mutationResolver) CreateChaosWorkFlow(ctx context.Context, input model.ChaosWorkFlowInput) (*model.ChaosWorkFlowResponse, error) {
-	err := validate.ValidateRole(ctx, input.ProjectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, input.ProjectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func (r *mutationResolver) SyncWorkflow(ctx context.Context, workflowid string, 
 }
 
 func (r *mutationResolver) SendInvitation(ctx context.Context, member model.MemberInput) (*model.Member, error) {
-	err := validate.ValidateRole(ctx, member.ProjectID, []model.MemberRole{model.MemberRoleOwner}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, member.ProjectID, []model.MemberRole{model.MemberRoleOwner}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func (r *mutationResolver) SendInvitation(ctx context.Context, member model.Memb
 }
 
 func (r *mutationResolver) AcceptInvitation(ctx context.Context, member model.MemberInput) (string, error) {
-	err := validate.ValidateRole(ctx, member.ProjectID, []model.MemberRole{model.MemberRoleViewer, model.MemberRoleEditor}, usermanagement.PendingInvitation)
+	err := authorization.ValidateRole(ctx, member.ProjectID, []model.MemberRole{model.MemberRoleViewer, model.MemberRoleEditor}, usermanagement.PendingInvitation)
 
 	if err != nil {
 		return "Unsuccessful", err
@@ -92,7 +92,7 @@ func (r *mutationResolver) AcceptInvitation(ctx context.Context, member model.Me
 }
 
 func (r *mutationResolver) DeclineInvitation(ctx context.Context, member model.MemberInput) (string, error) {
-	err := validate.ValidateRole(ctx, member.ProjectID, []model.MemberRole{model.MemberRoleViewer, model.MemberRoleEditor}, usermanagement.PendingInvitation)
+	err := authorization.ValidateRole(ctx, member.ProjectID, []model.MemberRole{model.MemberRoleViewer, model.MemberRoleEditor}, usermanagement.PendingInvitation)
 
 	if err != nil {
 		return "Unsuccessful", err
@@ -102,7 +102,7 @@ func (r *mutationResolver) DeclineInvitation(ctx context.Context, member model.M
 }
 
 func (r *mutationResolver) RemoveInvitation(ctx context.Context, member model.MemberInput) (string, error) {
-	err := validate.ValidateRole(ctx, member.ProjectID, []model.MemberRole{model.MemberRoleOwner}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, member.ProjectID, []model.MemberRole{model.MemberRoleOwner}, usermanagement.AcceptedInvitation)
 
 	if err != nil {
 		return "Unsuccessful", err
@@ -112,7 +112,7 @@ func (r *mutationResolver) RemoveInvitation(ctx context.Context, member model.Me
 }
 
 func (r *mutationResolver) LeaveProject(ctx context.Context, member model.MemberInput) (string, error) {
-	err := validate.ValidateRole(ctx, member.ProjectID, []model.MemberRole{model.MemberRoleViewer, model.MemberRoleEditor}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, member.ProjectID, []model.MemberRole{model.MemberRoleViewer, model.MemberRoleEditor}, usermanagement.AcceptedInvitation)
 
 	if err != nil {
 		return "Unsuccessful", err
@@ -122,7 +122,7 @@ func (r *mutationResolver) LeaveProject(ctx context.Context, member model.Member
 }
 
 func (r *mutationResolver) UpdateProjectName(ctx context.Context, projectID string, projectName string) (string, error) {
-	err := validate.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner}, usermanagement.AcceptedInvitation)
 
 	if err != nil {
 		return "Unsuccessful", err
@@ -152,7 +152,7 @@ func (r *mutationResolver) KubeObj(ctx context.Context, kubeData model.KubeObjec
 }
 
 func (r *mutationResolver) AddMyHub(ctx context.Context, myhubInput model.CreateMyHub, projectID string) (*model.MyHub, error) {
-	err := validate.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +161,7 @@ func (r *mutationResolver) AddMyHub(ctx context.Context, myhubInput model.Create
 }
 
 func (r *mutationResolver) SaveMyHub(ctx context.Context, myhubInput model.CreateMyHub, projectID string) (*model.MyHub, error) {
-	err := validate.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return nil, err
 	}
@@ -174,7 +174,7 @@ func (r *mutationResolver) SyncHub(ctx context.Context, id string) ([]*model.MyH
 }
 
 func (r *mutationResolver) UpdateChaosWorkflow(ctx context.Context, input *model.ChaosWorkFlowInput) (*model.ChaosWorkFlowResponse, error) {
-	err := validate.ValidateRole(ctx, input.ProjectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, input.ProjectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return nil, err
 	}
@@ -198,7 +198,7 @@ func (r *mutationResolver) GeneraterSSHKey(ctx context.Context) (*model.SSHKey, 
 }
 
 func (r *mutationResolver) UpdateMyHub(ctx context.Context, myhubInput model.UpdateMyHub, projectID string) (*model.MyHub, error) {
-	err := validate.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return nil, err
 	}
@@ -214,7 +214,7 @@ func (r *mutationResolver) GitopsNotifer(ctx context.Context, clusterInfo model.
 }
 
 func (r *mutationResolver) EnableGitOps(ctx context.Context, config model.GitConfig) (bool, error) {
-	err := validate.ValidateRole(ctx, config.ProjectID, []model.MemberRole{model.MemberRoleOwner}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, config.ProjectID, []model.MemberRole{model.MemberRoleOwner}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return false, err
 	}
@@ -222,7 +222,7 @@ func (r *mutationResolver) EnableGitOps(ctx context.Context, config model.GitCon
 }
 
 func (r *mutationResolver) DisableGitOps(ctx context.Context, projectID string) (bool, error) {
-	err := validate.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return false, err
 	}
@@ -230,7 +230,7 @@ func (r *mutationResolver) DisableGitOps(ctx context.Context, projectID string) 
 }
 
 func (r *mutationResolver) UpdateGitOps(ctx context.Context, config model.GitConfig) (bool, error) {
-	err := validate.ValidateRole(ctx, config.ProjectID, []model.MemberRole{model.MemberRoleOwner}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, config.ProjectID, []model.MemberRole{model.MemberRoleOwner}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return false, err
 	}
@@ -241,7 +241,7 @@ func (r *mutationResolver) CreateDataSource(ctx context.Context, datasource *mod
 	return analyticsHandler.CreateDataSource(datasource)
 }
 
-func (r *mutationResolver) CreateDashBoard(ctx context.Context, dashboard *model.CreateDBInput) (string, error) {
+func (r *mutationResolver) CreateDashBoard(ctx context.Context, dashboard *model.CreateDBInput) (*model.ListDashboardResponse, error) {
 	return analyticsHandler.CreateDashboard(dashboard)
 }
 
@@ -249,7 +249,7 @@ func (r *mutationResolver) UpdateDataSource(ctx context.Context, datasource mode
 	return analyticsHandler.UpdateDataSource(datasource)
 }
 
-func (r *mutationResolver) UpdateDashboard(ctx context.Context, dashboard *model.UpdataDBInput) (string, error) {
+func (r *mutationResolver) UpdateDashboard(ctx context.Context, dashboard *model.UpdateDBInput) (string, error) {
 	return analyticsHandler.UpdateDashBoard(dashboard)
 }
 
@@ -300,7 +300,7 @@ func (r *mutationResolver) DeleteImageRegistry(ctx context.Context, imageRegistr
 }
 
 func (r *queryResolver) GetWorkflowRuns(ctx context.Context, workflowRunsInput model.GetWorkflowRunsInput) (*model.GetWorkflowsOutput, error) {
-	err := validate.ValidateRole(ctx, workflowRunsInput.ProjectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, workflowRunsInput.ProjectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return nil, err
 	}
@@ -308,7 +308,7 @@ func (r *queryResolver) GetWorkflowRuns(ctx context.Context, workflowRunsInput m
 }
 
 func (r *queryResolver) GetCluster(ctx context.Context, projectID string, clusterType *string) ([]*model.Cluster, error) {
-	err := validate.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return nil, err
 	}
@@ -320,7 +320,7 @@ func (r *queryResolver) GetUser(ctx context.Context, username string) (*model.Us
 }
 
 func (r *queryResolver) GetProject(ctx context.Context, projectID string) (*model.Project, error) {
-	err := validate.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return nil, err
 	}
@@ -337,24 +337,32 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	return usermanagement.GetUsers(ctx)
 }
 
-func (r *queryResolver) GetScheduledWorkflows(ctx context.Context, projectID string) ([]*model.ScheduledWorkflows, error) {
-	err := validate.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
+func (r *queryResolver) GetWorkflowStats(ctx context.Context, projectID string, filter model.TimeFrequency, showWorkflowRuns bool) ([]*model.WorkflowStats, error) {
+	err := authorization.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return nil, err
 	}
-	return wfHandler.QueryWorkflows(projectID)
+	return analyticsHandler.GetWorkflowStats(projectID, filter, showWorkflowRuns)
 }
 
-func (r *queryResolver) ListWorkflow(ctx context.Context, projectID string, workflowIds []*string) ([]*model.Workflow, error) {
-	err := validate.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
+func (r *queryResolver) GetWorkflowRunStats(ctx context.Context, workflowRunStatsRequest model.WorkflowRunStatsRequest) (*model.WorkflowRunStatsResponse, error) {
+	err := authorization.ValidateRole(ctx, workflowRunStatsRequest.ProjectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return nil, err
 	}
-	return wfHandler.QueryListWorkflow(projectID, workflowIds)
+	return analyticsHandler.GetWorkflowRunStats(workflowRunStatsRequest)
+}
+
+func (r *queryResolver) ListWorkflow(ctx context.Context, workflowInput model.ListWorkflowsInput) (*model.ListWorkflowsOutput, error) {
+	err := authorization.ValidateRole(ctx, workflowInput.ProjectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
+	if err != nil {
+		return nil, err
+	}
+	return wfHandler.QueryListWorkflow(workflowInput)
 }
 
 func (r *queryResolver) GetCharts(ctx context.Context, hubName string, projectID string) ([]*model.Chart, error) {
-	err := validate.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return nil, err
 	}
@@ -362,7 +370,7 @@ func (r *queryResolver) GetCharts(ctx context.Context, hubName string, projectID
 }
 
 func (r *queryResolver) GetHubExperiment(ctx context.Context, experimentInput model.ExperimentInput) (*model.Chart, error) {
-	err := validate.ValidateRole(ctx, experimentInput.ProjectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, experimentInput.ProjectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return nil, err
 	}
@@ -370,7 +378,7 @@ func (r *queryResolver) GetHubExperiment(ctx context.Context, experimentInput mo
 }
 
 func (r *queryResolver) GetHubStatus(ctx context.Context, projectID string) ([]*model.MyHubStatus, error) {
-	err := validate.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
+	err := authorization.ValidateRole(ctx, projectID, []model.MemberRole{model.MemberRoleOwner, model.MemberRoleEditor, model.MemberRoleViewer}, usermanagement.AcceptedInvitation)
 	if err != nil {
 		return nil, err
 	}
@@ -405,7 +413,7 @@ func (r *queryResolver) GetPromSeriesList(ctx context.Context, dsDetails *model.
 	return analyticsHandler.GetSeriesList(dsDetails)
 }
 
-func (r *queryResolver) ListDashboard(ctx context.Context, projectID string) ([]*model.ListDashboardReponse, error) {
+func (r *queryResolver) ListDashboard(ctx context.Context, projectID string) ([]*model.ListDashboardResponse, error) {
 	return analyticsHandler.QueryListDashboard(projectID)
 }
 
@@ -437,6 +445,14 @@ func (r *queryResolver) GetImageRegistry(ctx context.Context, imageRegistryID st
 	}
 
 	return imageRegistry, err
+}
+
+func (r *queryResolver) UsageQuery(ctx context.Context, query model.UsageQuery) (*model.UsageData, error) {
+	claims := ctx.Value(authorization.UserClaim).(jwt.MapClaims)
+	if claims["role"].(string) != "admin" {
+		return nil, errors.New("only portal admin access")
+	}
+	return usage.GetUsage(ctx, query)
 }
 
 func (r *subscriptionResolver) ClusterEventListener(ctx context.Context, projectID string) (<-chan *model.ClusterEvent, error) {
