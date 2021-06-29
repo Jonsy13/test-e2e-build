@@ -39,7 +39,7 @@ type Node struct {
 	ChaosExp   *ChaosData `json:"chaosData,omitempty"`
 }
 
-// ChaosData is the data we get from chaos exporter
+// ChaosData is the data we get 
 type ChaosData struct {
 	EngineUID              string                  `json:"engineUID"`
 	EngineName             string                  `json:"engineName"`
