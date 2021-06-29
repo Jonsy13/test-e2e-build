@@ -52,7 +52,7 @@ func AddMyHub(ctx context.Context, myhub model.CreateMyHub, projectID string) (*
 		SSHPrivateKey: myhub.SSHPrivateKey,
 	}
 
-	// Cloning the repository at a path from myhub link structure.
+	// Cloning the repository at a path from myhub li
 	err = myHubOps.GitClone(cloneHub)
 	if err != nil {
 		return nil, err
