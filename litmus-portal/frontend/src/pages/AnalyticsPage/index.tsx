@@ -1,7 +1,7 @@
 import { AppBar, Typography } from '@material-ui/core';
 import useTheme from '@material-ui/core/styles/useTheme';
 import Tabs from '@material-ui/core/Tabs';
-import React from 'react';
+import React, { lazy } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { StyledTab, TabPanel } from '../../components/Tabs';
@@ -9,11 +9,19 @@ import Scaffold from '../../containers/layouts/Scaffold';
 import useActions from '../../redux/actions';
 import * as TabActions from '../../redux/actions/tabs';
 import { RootState } from '../../redux/reducers';
-import DashboardTable from '../../views/Analytics/ApplicationDashboards/Table';
-import DataSourceTable from '../../views/Analytics/DataSources/Table';
-import Overview from '../../views/Analytics/Overview';
-import WorkflowComparisonTable from '../../views/Analytics/WorkflowDashboard/WorkflowComparisonTable';
 import useStyles from './styles';
+
+const Overview = lazy(() => import('../../views/Analytics/Overview'));
+const DashboardTable = lazy(
+  () => import('../../views/Analytics/ApplicationDashboards/Table')
+);
+const DataSourceTable = lazy(
+  () => import('../../views/Analytics/DataSources/Table')
+);
+const WorkflowComparisonTable = lazy(
+  () =>
+    import('../../views/Analytics/WorkflowDashboard/WorkflowComparisonTable')
+);
 
 const AnalyticsDashboard = () => {
   const classes = useStyles();

@@ -17,4 +17,4 @@ const LandingHome: React.FC = () => {
   );
 };
 
-export { LandingHome };
+export default LandingHome;

@@ -1,6 +1,6 @@
 import { Paper, Tabs, Typography } from '@material-ui/core';
 import useTheme from '@material-ui/core/styles/useTheme';
-import React from 'react';
+import React, { lazy } from 'react';
 import { useSelector } from 'react-redux';
 import { StyledTab, TabPanel } from '../../components/Tabs';
 import Scaffold from '../../containers/layouts/Scaffold';
@@ -9,12 +9,16 @@ import useActions from '../../redux/actions';
 import * as TabActions from '../../redux/actions/tabs';
 import { RootState } from '../../redux/reducers';
 import { getUserRole } from '../../utils/auth';
-import AccountSettings from '../../views/Settings/AccountsTab/AccountSettings';
-import GitOpsTab from '../../views/Settings/GitOpsTab';
-import ImageRegistry from '../../views/Settings/ImageRegistry';
-import TeamingTab from '../../views/Settings/TeamingTab/Team';
-import UserManagement from '../../views/Settings/UserManagementTab/UserManagement';
 import useStyles from './styles';
+const AccountSettings = lazy(
+  () => import('../../views/Settings/AccountsTab/AccountSettings')
+);
+const GitOpsTab = lazy(() => import('../../views/Settings/GitOpsTab'));
+const ImageRegistry = lazy(() => import('../../views/Settings/ImageRegistry'));
+const TeamingTab = lazy(() => import('../../views/Settings/TeamingTab/Team'));
+const UserManagement = lazy(
+  () => import('../../views/Settings/UserManagementTab/UserManagement')
+);
 
 // tabProps returns 'id' and 'aria-control' props of Tab
 function tabProps(index: any) {
