@@ -17,7 +17,7 @@ import ExpandMoreTwoToneIcon from '@material-ui/icons/ExpandMoreTwoTone';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import * as _ from 'lodash';
+import _groupBy from 'lodash.groupby';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -365,16 +365,16 @@ const WorkflowComparisonTable = () => {
     }
 
     timeSeriesArray.forEach((workflowTimeSeriesData, index) => {
-      const hourlyGroupedResults = _.groupBy(workflowTimeSeriesData, (data) =>
+      const hourlyGroupedResults = _groupBy(workflowTimeSeriesData, (data) =>
         moment
           .unix(parseInt(data.date, 10))
           .startOf('hour')
           .format('YYYY-MM-DD HH:mm:ss')
       );
-      const dailyGroupedResults = _.groupBy(workflowTimeSeriesData, (data) =>
+      const dailyGroupedResults = _groupBy(workflowTimeSeriesData, (data) =>
         moment.unix(parseInt(data.date, 10)).startOf('day').format('YYYY-MM-DD')
       );
-      const monthlyGroupedResults = _.groupBy(workflowTimeSeriesData, (data) =>
+      const monthlyGroupedResults = _groupBy(workflowTimeSeriesData, (data) =>
         moment.unix(parseInt(data.date, 10)).startOf('month').format('YYYY-MM')
       );
       plotData.xData.Hourly[index] = [];

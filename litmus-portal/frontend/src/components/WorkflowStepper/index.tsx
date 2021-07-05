@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { ButtonFilled, ButtonOutlined } from 'litmus-ui';
 import localforage from 'localforage';
-import React, { lazy, Suspense, useEffect, useRef } from 'react';
+import React, { lazy, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import Row from '../../containers/layouts/Row';
