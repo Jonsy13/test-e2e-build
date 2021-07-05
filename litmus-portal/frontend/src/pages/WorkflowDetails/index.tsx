@@ -31,18 +31,14 @@ import * as NodeSelectionActions from '../../redux/actions/nodeSelection';
 import * as TabActions from '../../redux/actions/tabs';
 import { RootState } from '../../redux/reducers';
 import { getProjectID } from '../../utils/getSearchParams';
+import ArgoWorkflow from '../../views/WorkflowDetails/ArgoWorkflow';
+import WorkflowInfo from '../../views/WorkflowDetails/WorkflowInfo';
 import useStyles from './styles';
-
-const ArgoWorkflow = lazy(
-  () => import('../../views/WorkflowDetails/ArgoWorkflow')
-);
 
 const NodeLogsModal = lazy(
   () => import('../../views/WorkflowDetails/LogsModal')
 );
-const WorkflowInfo = lazy(
-  () => import('../../views/WorkflowDetails/WorkflowInfo')
-);
+
 const WorkflowNodeInfo = lazy(
   () => import('../../views/WorkflowDetails/WorkflowNodeInfo')
 );
