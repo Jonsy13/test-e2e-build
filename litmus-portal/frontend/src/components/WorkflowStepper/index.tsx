@@ -7,7 +7,6 @@ import localforage from 'localforage';
 import React, { lazy, Suspense, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import Center from '../../containers/layouts/Center';
 import Row from '../../containers/layouts/Row';
 import useActions from '../../redux/actions';
 import * as AlertActions from '../../redux/actions/alert';
@@ -280,17 +279,7 @@ const WorkflowStepper = () => {
         handleNext={() => handleNext()}
         finishAction={() => {}}
       >
-        <Suspense
-          fallback={
-            <div style={{ height: '100vh' }}>
-              <Center>
-                <Loader />
-              </Center>
-            </div>
-          }
-        >
-          {getStepContent(activeStep, childRef)}
-        </Suspense>
+        {getStepContent(activeStep, childRef)}
       </LitmusStepper>
     </div>
   );
