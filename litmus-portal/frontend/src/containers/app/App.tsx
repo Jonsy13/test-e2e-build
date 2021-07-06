@@ -55,7 +55,7 @@ const Routes: React.FC = () => {
   const userID = getUserId();
 
   const { loading } = useQuery<Projects>(LIST_PROJECTS, {
-    skip: projectID !== '' && projectID !== undefined,
+    skip: (projectID !== '' && projectID !== undefined) || getToken() === '',
     onCompleted: (data) => {
       if (data.listProjects) {
         data.listProjects.forEach((project): void => {
@@ -83,6 +83,7 @@ const Routes: React.FC = () => {
   });
 
   const { loading: projectValidation } = useQuery<ProjectDetail>(GET_PROJECT, {
+    skip: getToken() === '',
     variables: { projectID },
     onCompleted: (data) => {
       if (data?.getProject) {
@@ -110,15 +111,11 @@ const Routes: React.FC = () => {
   if (getToken() === '') {
     return (
       <>
-        {loading ? (
-          <Loader />
-        ) : (
-          <Switch>
-            <Route exact path="/login" component={LoginPage} />
-            <Redirect exact path="/api-doc" to="/api-doc/index.html" />
-            <Redirect to="/login" />
-          </Switch>
-        )}
+        <Switch>
+          <Route exact path="/login" component={LoginPage} />
+          <Redirect exact path="/api-doc" to="/api-doc/index.html" />
+          <Redirect to="/login" />
+        </Switch>
       </>
     );
   }
@@ -127,7 +124,11 @@ const Routes: React.FC = () => {
     return (
       <>
         {loading ? (
-          <Loader />
+          <div style={{ height: '100vh' }}>
+            <Center>
+              <Loader />
+            </Center>
+          </div>
         ) : (
           <Switch>
             <Route exact path="/getStarted" component={GetStarted} />
@@ -141,7 +142,11 @@ const Routes: React.FC = () => {
   return (
     <>
       {projectValidation && loading ? (
-        <Loader />
+        <div style={{ height: '100vh' }}>
+          <Center>
+            <Loader />
+          </Center>
+        </div>
       ) : (
         <Switch>
           <Route exact path="/home" component={HomePage} />
@@ -247,13 +252,13 @@ const Routes: React.FC = () => {
 };
 
 function App() {
-  const analyticsAction = useActions(AnalyticsActions);
-  const token = getToken();
-  useEffect(() => {
-    if (token !== '') {
-      analyticsAction.loadCommunityAnalytics();
-    }
-  }, [token]);
+  // const analyticsAction = useActions(AnalyticsActions);
+  // const token = getToken();
+  // useEffect(() => {
+  //   if (token !== '') {
+  //     analyticsAction.loadCommunityAnalytics();
+  //   }
+  // }, [token]);
   return (
     <LitmusThemeProvider>
       <Suspense

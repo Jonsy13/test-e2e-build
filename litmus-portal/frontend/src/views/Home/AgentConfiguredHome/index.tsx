@@ -4,7 +4,6 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import { ButtonFilled, ButtonOutlined, Modal, TextButton } from 'litmus-ui';
 import React, { lazy, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AgentDeployModal } from '../../../components/AgentDeployModal';
 import Loader from '../../../components/Loader';
 import { MainInfoContainer } from '../../../components/MainInfoContainer';
 import { OverviewContainer } from '../../../components/OverviewContainer';
@@ -23,6 +22,9 @@ import { getProjectID, getProjectRole } from '../../../utils/getSearchParams';
 import useStyles from './styles';
 const WorkflowRunCard = lazy(() => import('./WorkflowRunCard'));
 const ProjectInfoContainer = lazy(() => import('../ProjectInfoContainer'));
+const AgentDeployModal = lazy(
+  () => import('../../../components/AgentDeployModal')
+);
 
 interface AgentConfiguredHomeProps {
   agentCount: number;
