@@ -14,6 +14,7 @@ import * as WorkflowActions from '../../redux/actions/workflow';
 import { history } from '../../redux/configureStore';
 import { RootState } from '../../redux/reducers';
 import { getProjectID, getProjectRole } from '../../utils/getSearchParams';
+import { SuspenseLoader } from '../../components/SuspenseLoader';
 import useStyles from './styles';
 const BrowseSchedule = lazy(
   () => import('../../views/ChaosWorkflows/BrowseSchedule')
@@ -81,10 +82,14 @@ const Workflows = () => {
         </Tabs>
       </AppBar>
       <TabPanel value={workflowTabValue} index={0}>
-        <BrowseWorkflow />
+        <SuspenseLoader style={{ height: '100%' }}>
+          <BrowseWorkflow />
+        </SuspenseLoader>
       </TabPanel>
       <TabPanel value={workflowTabValue} index={1}>
-        <BrowseSchedule />
+        <SuspenseLoader style={{ height: '100%' }}>
+          <BrowseSchedule />
+        </SuspenseLoader>
       </TabPanel>
     </Scaffold>
   );

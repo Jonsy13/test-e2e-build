@@ -4,10 +4,9 @@ import Typography from '@material-ui/core/Typography';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { ButtonFilled, ButtonOutlined } from 'litmus-ui';
 import localforage from 'localforage';
-import React, { lazy, Suspense, useEffect, useRef } from 'react';
+import React, { lazy, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import Center from '../../containers/layouts/Center';
 import Row from '../../containers/layouts/Row';
 import useActions from '../../redux/actions';
 import * as AlertActions from '../../redux/actions/alert';
@@ -16,6 +15,7 @@ import { getProjectRole } from '../../utils/getSearchParams';
 import { LitmusStepper } from '../LitmusStepper';
 import Loader from '../Loader';
 import useStyles from './styles';
+import { SuspenseLoader } from '../SuspenseLoader';
 
 const ChooseAWorkflowAgent = lazy(
   () => import('../../views/CreateWorkflow/ChooseAWorkflowAgent')
@@ -280,17 +280,9 @@ const WorkflowStepper = () => {
         handleNext={() => handleNext()}
         finishAction={() => {}}
       >
-        <Suspense
-          fallback={
-            <div style={{ height: '100vh' }}>
-              <Center>
-                <Loader />
-              </Center>
-            </div>
-          }
-        >
+        <SuspenseLoader style={{ height: '100%' }}>
           {getStepContent(activeStep, childRef)}
-        </Suspense>
+        </SuspenseLoader>
       </LitmusStepper>
     </div>
   );

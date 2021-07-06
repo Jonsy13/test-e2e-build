@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { AppBar, Typography, useTheme } from '@material-ui/core';
 import Tabs from '@material-ui/core/Tabs/Tabs';
-import React, { lazy, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -32,19 +32,11 @@ import * as TabActions from '../../redux/actions/tabs';
 import { RootState } from '../../redux/reducers';
 import { getProjectID } from '../../utils/getSearchParams';
 import ArgoWorkflow from '../../views/WorkflowDetails/ArgoWorkflow';
+import NodeLogsModal from '../../views/WorkflowDetails/LogsModal';
 import WorkflowInfo from '../../views/WorkflowDetails/WorkflowInfo';
+import WorkflowNodeInfo from '../../views/WorkflowDetails/WorkflowNodeInfo';
+import NodeTable from '../../views/WorkflowDetails/WorkflowTable';
 import useStyles from './styles';
-
-const NodeLogsModal = lazy(
-  () => import('../../views/WorkflowDetails/LogsModal')
-);
-
-const WorkflowNodeInfo = lazy(
-  () => import('../../views/WorkflowDetails/WorkflowNodeInfo')
-);
-const NodeTable = lazy(
-  () => import('../../views/WorkflowDetails/WorkflowTable')
-);
 
 interface URLParams {
   workflowRunId: string;
