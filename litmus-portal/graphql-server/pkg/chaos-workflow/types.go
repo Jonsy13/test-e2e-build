@@ -27,7 +27,7 @@ type ExecutionData struct {
 	Nodes             map[string]Node `json:"nodes"`
 }
 
-// Node represents each node/step data
+// Node represents ea node/step data
 type Node struct {
 	Name       string     `json:"name"`
 	Phase      string     `json:"phase"`
