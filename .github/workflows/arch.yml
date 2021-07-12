@@ -30,6 +30,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: false
+          context: litmus-portal/frontend/
           file: litmus-portal/frontend/Dockerfile
           platforms: linux/arm64
           tags: jonsy13/frontend:ci
