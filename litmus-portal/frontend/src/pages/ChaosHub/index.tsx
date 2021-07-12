@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { Snackbar, Typography } from '@material-ui/core';
 import { ButtonFilled, ButtonOutlined, Modal } from 'litmus-ui';
-import React, { useState } from 'react';
+import React, { lazy, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from '@material-ui/lab';
 import DeveloperGuide from '../../components/DeveloperGuide';
@@ -10,10 +10,10 @@ import Scaffold from '../../containers/layouts/Scaffold';
 import { DELETE_HUB, GET_HUB_STATUS, SYNC_REPO } from '../../graphql';
 import { HubDetails, HubStatus } from '../../models/redux/myhub';
 import { getProjectID } from '../../utils/getSearchParams';
+import { constants } from '../../constants';
 import CustomMyHubCard from './customMyHubCard';
 import useStyles from './styles';
-import MyHubConnectDrawer from './MyHubConnectDrawer';
-import { constants } from '../../constants';
+const MyHubConnectDrawer = lazy(() => import('./MyHubConnectDrawer'));
 
 interface DeleteHub {
   deleteHubModal: boolean;
@@ -151,6 +151,7 @@ const MyHub: React.FC = () => {
             <ButtonFilled
               onClick={() => setDrawerState(true)}
               className={classes.connectNewHub}
+              data-cy="myHubConnectButton"
             >
               {t('myhub.mainPage.connect')}
             </ButtonFilled>
@@ -196,6 +197,7 @@ const MyHub: React.FC = () => {
                     &#x2715;
                   </ButtonOutlined>
                 }
+                data-cy="deleteHubModal"
               >
                 <div className={classes.modalDiv}>
                   <img src="/icons/red-cross.svg" alt="disconnect" />
@@ -231,6 +233,7 @@ const MyHub: React.FC = () => {
       />
       {/* SnackBar to display success/failure alerts */}
       <Snackbar
+        data-cy="myHubAlert"
         open={displayResult}
         autoHideDuration={6000}
         onClose={() => {
