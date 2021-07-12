@@ -90,7 +90,7 @@ jobs:
       - name: Checkout litmus-E2E Repository
         uses: actions/checkout@v2
         with:
-          repository: ved432/testSetup
+          repository: litmuschaos/litmus-e2e
           path: litmus-e2e
 
       - name: Notification for Starting Testing.
