@@ -16,7 +16,6 @@ jobs:
       - name: Testing
         run: |
           kubectl cluster-info --context kind-k1
-          kind get kubeconfig --internal >$HOME/.kube/config
           kubectl get nodes
           kubectl get pods -n kube-system
 
