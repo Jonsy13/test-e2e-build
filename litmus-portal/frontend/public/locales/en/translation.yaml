@@ -7,7 +7,7 @@ getStarted:
     step: Step
     of: of
   project:
-    name: projectName
+    name: projectN
     label: Project Name
     info: Set your project
     desc: Choose an appropriate name for your project. This project name will be used when collaborating with your team members.
