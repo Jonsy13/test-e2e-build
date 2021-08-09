@@ -4,9 +4,9 @@ FROM arm64v8/node:12.18-alpine as react-build
 
 # Add Maintainer Info
 LABEL maintainer="LitmusChaos"
-WORKDIR /frontend
+WORKDIR /frontend/build
 
-COPY build /build
+COPY build .
 
 # Stage 2: the production environment
 FROM nginxinc/nginx-unprivileged:1.18-alpine
