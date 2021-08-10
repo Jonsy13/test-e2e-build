@@ -264,6 +264,6 @@ jobs:
           FRONTEND_IMAGE=${{ matrix.frontend.image_name }}
           timestamp=`date "+%s"`
           REACT_APP_KB_CHAOS_VERSION=${IMG_TAG}
-          REACT_APP_BUILD_TIME="$(timestamp)"
+          REACT_APP_BUILD_TIME="${timestamp}"
           REACT_APP_HUB_BRANCH_NAME="v1.13.x"
           make push-frontend
