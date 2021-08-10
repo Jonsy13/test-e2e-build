@@ -4,6 +4,9 @@ FROM arm64v8/node:12.18-alpine as react-build
 
 # Add Maintainer Info
 LABEL maintainer="LitmusChaos"
+
+ARG TARGETOS=linux
+ARG TARGETARCH
 WORKDIR /frontend/build
 
 COPY build .
