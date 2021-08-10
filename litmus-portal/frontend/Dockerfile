@@ -15,10 +15,9 @@ WORKDIR /frontend/build
 
 COPY build .
 
-# Stage 2: the production environment
 FROM nginxinc/nginx-unprivileged:1.18-alpine
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
-COPY  /frontend/build /usr/share/nginx/html
+COPY  --from=react-build /frontend/build /usr/share/nginx/html
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
