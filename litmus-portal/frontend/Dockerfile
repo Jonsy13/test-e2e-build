@@ -11,6 +11,10 @@ ARG REACT_APP_KB_CHAOS_VERSION
 ARG REACT_APP_BUILD_TIME
 ARG REACT_APP_HUB_BRANCH_NAME
 
+WORKDIR /frontend/build
+
+COPY build .
+
 # Stage 2: the production environment
 FROM nginxinc/nginx-unprivileged:1.18-alpine
 RUN rm /etc/nginx/conf.d/default.conf
