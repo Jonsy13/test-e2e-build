@@ -112,6 +112,7 @@ buildx.push.image:
 
 buildx.push.frontend:
 	@cd frontend && \
+	npm ci && \
 	CI=false npm run build && \
 	docker buildx build . -f Dockerfile --progress plane --push --no-cache --platform $(PLATFORMS) -t $(REPONAME)/$(FRONTEND_IMAGE):$(IMG_TAG);
 
