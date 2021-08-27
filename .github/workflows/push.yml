@@ -269,6 +269,11 @@ jobs:
         with:
           version: latest
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: all
+
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
