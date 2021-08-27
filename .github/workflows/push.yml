@@ -47,7 +47,7 @@ jobs:
     outputs:
       TAG: ${{ steps.envs.outputs.TAG }}
       SHA_TAG: ${{ steps.envs.outputs.SHA_TAG }}
-      TIMES_STAMP: ${{ steps.envs.outputs.TIME_STAMP }}
+      TIME_STAMP: ${{ steps.envs.outputs.TIME_STAMP }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -280,7 +280,7 @@ jobs:
         env:
           TAG: ${{ needs.get-envs.outputs.TAG }}
           SHA_TAG: ${{ needs.get-envs.outputs.SHA_TAG }}
-          TIMES_STAMP: ${{ needs.get-envs.outputs.TIME_STAMP }}
+          TIME_STAMP: ${{ needs.get-envs.outputs.TIME_STAMP }}
         with:
           push: true
           file: ./litmus-portal/frontend/Dockerfile

@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       RELEASE_TAG: ${{ steps.envs.outputs.RELEASE_TAG }}
-      TIMES_STAMP: ${{ steps.envs.outputs.TIME_STAMP }}
+      TIME_STAMP: ${{ steps.envs.outputs.TIME_STAMP }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -224,7 +224,7 @@ jobs:
         uses: docker/build-push-action@v2
         env:
           RELEASE_TAG: ${{ needs.get-envs.outputs.RELEASE_TAG }}
-          TIMES_STAMP: ${{ needs.get-envs.outputs.TIME_STAMP }}
+          TIME_STAMP: ${{ needs.get-envs.outputs.TIME_STAMP }}
         with:
           push: true
           file: ./litmus-portal/frontend/Dockerfile
