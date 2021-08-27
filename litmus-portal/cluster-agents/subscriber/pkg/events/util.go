@@ -36,6 +36,7 @@ func getChaosData(nodeStatus v1alpha13.NodeStatus, engineName, engineNS string, 
 	cd.ProbeSuccessPercentage = "0"
 	cd.FailStep = ""
 	cd.EngineUID = string(crd.ObjectMeta.UID)
+	cd.EngineContext = string(crd.Labels["context"])
 
 	if strings.ToLower(string(crd.Status.EngineStatus)) == "stopped" {
 		cd.ExperimentVerdict = "Fail"
@@ -145,8 +146,8 @@ func GetWorkflowObj(uid string) (*v1alpha1.Workflow, error) {
 }
 
 // generate graphql mutation payload for events event
-func GenerateWorkflowPayload(cid, accessKey, completed string, wfEvent types.WorkflowEvent) ([]byte, error) {
-	clusterID := `{cluster_id: \"` + cid + `\", access_key: \"` + accessKey + `\"}`
+func GenerateWorkflowPayload(cid, accessKey, version, completed string, wfEvent types.WorkflowEvent) ([]byte, error) {
+	clusterID := `{cluster_id: \"` + cid + `\", version: \"` + version + `\", access_key: \"` + accessKey + `\"}`
 
 	for id, event := range wfEvent.Nodes {
 		event.Message = strings.Replace(event.Message, `"`, ``, -1)

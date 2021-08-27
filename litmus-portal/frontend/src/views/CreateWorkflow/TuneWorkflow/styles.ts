@@ -82,7 +82,6 @@ const useStyles = makeStyles((theme) => ({
 
   // Table
   table: {
-    minWidth: '40rem',
     minHeight: '23rem',
   },
   revertChaos: {
@@ -94,6 +93,7 @@ const useStyles = makeStyles((theme) => ({
   },
   key: {
     margin: theme.spacing(1, 2),
+    display: 'flex',
   },
   selection: {
     cursor: 'pointer',
@@ -225,6 +225,16 @@ const useStyles = makeStyles((theme) => ({
   },
   experimentName: {
     fontSize: '1rem',
+  },
+  infoText: {
+    padding: theme.spacing(2),
+    width: '15.625rem',
+  },
+  iconBtn: {
+    marginTop: theme.spacing(-1.5),
+  },
+  emptyCell: {
+    width: '1.5rem',
   },
 }));
 

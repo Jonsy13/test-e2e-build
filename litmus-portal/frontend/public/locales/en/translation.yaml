@@ -3,20 +3,21 @@ getStarted:
   button:
     continue: Next
     back: Back
-    finish: Finish
+    finish: Change Password
+    skip: Skip for now
     step: Step
     of: of
   project:
     name: projectName
     label: Project Name
-    info: Set your project
+    info: Set your project name
     desc: Choose an appropriate name for your project. This project name will be used when collaborating with your team members.
   password:
     name: password
-    label: Password
+    label: New Password
     cnfLabel: Confirm Password
     cnfName: confirmPassword
-    info: Set your new Password
+    info: Set a new Password
     desc: Use the new password at your next login.
 
 ###########################################
@@ -24,8 +25,9 @@ getStarted:
 ###########################################
 
 sidebar:
-  title: Litmus
-  version: 'Version: 1.13'
+  title: Chaos Center
+  version: Litmus Version
+  time: Build Time
 
 header:
   projectDropdown:
@@ -65,8 +67,8 @@ customWorkflowCard:
 
 workflowStepper:
   continueError: To continue, please check the error in code.
-  scheduleNewChaosWorkflow: Schedule a new chaos workflow
-  aNewChaosWorkflow: A new chaos workflow,
+  scheduleNewChaosWorkflow: Schedule a new Litmus workflow
+  aNewChaosWorkflow: A new Litmus workflow,
   successful: is successfully created!
   congratulationsSub1: Congratulations on creating your workflow! Now information about
   congratulationsSub2: it will be displayed on the workflow schedules.
@@ -99,11 +101,11 @@ home:
   heading: Welcome,
 
 login:
-  heading: Chaos Engineering for your Cloud Native applications
-  subHeading1: Create, orchestrate, analyze and collaborate your Chaos Workflows.
+  heading: Welcome to Chaos Center
+  subHeading1: Login to create, orchestrate, analyze and collaborate your Litmus workflows.
   subHeading2: With your own private ChaosHub, you can create your new chaos experiments and share them with your team.
   wrongCredentials: Wrong Credentials - Try again with correct username or password
-  forgetPassword: Forgot your password?
+  forgotPassword: Forgot your password?
   tooltipText: You need to contact your admin to reset your password.
 
 schedule:
@@ -147,31 +149,43 @@ community:
   heading: 'Litmus Insights'
   headingDesc: 'Stats for the Litmus community'
   analyticDesc: 'Periodic growth of Litmus'
-  statsHeading: 'Litmus users around the world:'
+  statsHeading: 'Litmus users around the world'
   litmusChaos: Litmuschaos
   follow: Follow
+  feedback:
+    title: What do you think of Litmus?
+    subHeading: Provide your valuable feedback
+  joinSlack: Litmuschaos on
+  communityEvents:
+    title: Know about Community Events
+    subHeading: Explore about monthly community sync ups, Kubernetes meetups and other events in CNCF
+  footerText: Follow us on other platforms
 
-analytics:
-  workflowAnalytics: Workflow Analytics
+observability:
+  workflowStatistics: Workflow Statistics
   fetchError: An error has occurred while fetching the data
   viewTestResult: Click on test to view the results for the selected period
-  comingSoon: Analytics Coming Soon !
+  comingSoon: Statistics Coming Soon !
   waitingMessage: Waiting for workflow to start running !
   chaosCompleteWaitingMessage: Waiting for chaos experiment to finish !
   highestScore: 'Highest Score:'
   lowestScore: 'Lowest Score:'
   exportPDF: Export PDF
   compareWorkflows: Compare workflows
-  targetCluster: Target cluster
+  targetCluster: Target agent
   workflowSelected: workflow selected
   workflowsSelected: workflows selected
   tableHead1: Workflow Name
   tableHead2: Starting Date
   tableHead3: Regularity
-  tableHead4: Cluster
+  tableHead4: Agent
+  workflowInfoStats:
+    noRuns: No completed runs yet
+    back: Back to Observability
   workflowRunDetailsTable:
-    tableHead1: Test Name
-    tableHead2: Test Result
+    tableHead0: Test Name
+    tableHead1: Experiment Name
+    tableHead2: Experiment Verdict
     tableHead3: Weight of the test
     tableHead4: Resulting Points
     tableHead5: Last run
@@ -183,10 +197,15 @@ analytics:
     probeSuccessPercentage: Probe Success Percentage
     experimentVerdict: Experiment Verdict
 
-analyticsDashboard:
-  heading: Analytics
+monitoringDashboard:
+  heading: Observability
   overview: Overview
   monitoringDashboardPage:
+    loadingText: Loading monitoring dashboard ...
+    metricsLoadingText: Fetching metrics ...
+    errorText: Error while loading the monitoring dashboard
+    tryAgain: Try again
+    goBack: Go back
     dataSourceError: Reconfigure this dashboard with a different data source or update data source information.
     dataSourceIs: Data source is
     reConfigureDashboard: Re-configure dashboard
@@ -195,7 +214,7 @@ analyticsDashboard:
     headerInfoText: "View the chaos events and metrics in a given \n time interval by selecting a time interval."
     infoButtonText: Info
     infoDropdown:
-      header: Application Dashboard Information
+      header: Monitoring Dashboard Information
       close: Close Info
       subHeading1: Dashboard Configuration Details
       subHeading2: Selected Applications
@@ -207,12 +226,13 @@ analyticsDashboard:
       metaData4: Agent
     rangeSelector:
       to: to
-      selectPeriod: Select Period
+      last30Mins: Last 30 mins
     refresh:
       heading: Refresh
       off: Off
       every5Seconds: Every 5 seconds
       every10Seconds: Every 10 seconds
+      every15Seconds: Every 15 seconds
       every30Seconds: Every 30 seconds
       every1Minute: Every 1 minute
       every5Minutes: Every 5 minutes
@@ -225,15 +245,25 @@ analyticsDashboard:
       tableHead1: Chaos result name
       tableHead2: Workflow
       tableHead3: Engine context
-      tableHead4: Target
-      tableHead5:
+      tableHead4:
         title: Verdict
         infoText: Latest Chaos experiment verdict
       noRecords: No chaos happened during the interval
       showTable: Show Chaos during this interval
       hideTable: Hide Chaos during this interval
+      search: Search
+      all: All
+      loading: Fetching chaos injection details ...
+    chaosAnnotationsEditor:
+      heading: Chaos annotations
+      eventQuery: Event query
+      verdictQuery: Verdict query
+      cancel: Cancel
+      saveChanges: Save changes
+      updateSuccess: Successfully updated the chaos annotations
+      updateError: Error updating the chaos annotations
     dashboardCloneModal:
-      heading: Clone the application dashboard
+      heading: Clone the monitoring dashboard
       cancel: Cancel
       ok: OK
       error: Error cloning dashboard
@@ -248,7 +278,7 @@ analyticsDashboard:
     tab3: Monthly
     tab4: Yearly
     worflowSchedulesTitle: Workflow Schedules
-    clusterCountTitle: Clusters
+    clusterCountTitle: Agents
     timeSelectionMessage: Overview of latest
     timeSelection0: Hour
     timeSelection1: Day
@@ -256,7 +286,7 @@ analyticsDashboard:
     scheduleWorkflowMessage: Schedule my first workflow
   seeAll: See All
   seeDetails: See Details
-  seeAnalytics: See Analytics
+  seeStatistics: See Statistics
   workflowStats:
     title: Workflow stats
     workflowPassed: Passed
@@ -265,13 +295,13 @@ analyticsDashboard:
   workflowScheduleTable:
     title: Workflow Schedules
     noRecordMessage: No workflow has been schedule
-  workflowDashboard: Workflow dashboards
+  workflowStatistics: Workflow statistics
   overviewTabdataSourceTable: Connected Data Sources
-  applicationDashboard: Application dashboards
-  applicationDashboardTable:
+  monitoringDashboard: Monitoring dashboards
+  monitoringDashboardTable:
     warning:
-      noActiveDataSource: No active data source found for creating an application dashboard.
-      noAvailableDataSource: No data source available. To create an Application dashboard you need to add a data source.
+      noActiveDataSource: No active data source found for creating a monitoring dashboard.
+      noAvailableDataSource: No data source available. To create a monitoring dashboard you need to add a data source.
       configureExisting: Configure an existing data source
       addNew: Add data source
       or: or
@@ -280,15 +310,17 @@ analyticsDashboard:
     search: Search
     selectPeriod: Select period
     all: All
-    tableHead1: Dashboard name
+    tableHead1: Name
     tableHead2: Agent name
     tableHead3: Dashboard type
     tableHead4: Data source type
     tableHead5: Last viewed
     createDashboard: Create dashboard
-    title: Application Dashboard
+    dashboards: Dashboards
+    title: Monitoring Dashboard
     view: View
     configure: Configure
+    json: JSON
     delete: Delete
     noRecords: No dashboard available
     loading: Loading available dashboards
@@ -298,7 +330,11 @@ analyticsDashboard:
       removeDashboardConfirmation: Are you sure you want to remove the dashboard
       cancel: Cancel
       delete: Delete
-  applicationDashboards:
+  monitoringDashboards:
+    loadingDashboard: Loading dashboard configuration ...
+    loadingDataSources: Loading available data sources ...
+    errorFetchingDashboard: Error loading dashboard configuration
+    errorFetchingDataSources: Error loading data sources
     createHeader: Create dashboard
     configureHeader: Configure dashboard
     chooseADashboardType:
@@ -318,6 +354,8 @@ analyticsDashboard:
         agent: Agent
         noActiveAgent: No active agent found
         agentInactive: Agent is inactive
+        fetchingAgents: Loading agents ...
+        errorFetchingAgents: Error loading agents
         dataSource: Data source
         noActiveDataSource: No active data source found
         dataSourceInactive: Data source is inactive
@@ -330,12 +368,12 @@ analyticsDashboard:
         addApplication: Add application
     selectTheMetrics:
       header: Select metrics
-      description: Based on the namespaces and application these are the possible metrics that can be plotted.
+      description: Based upon the selected dashboard type these are the possible metrics that can be plotted.
       errorMessage: No panel groups or panels were found. Re-upload the dashboard.
     tuneTheQueries:
       header: Tune the queries
-      description: Edit queries to the data source for fetching relevant metrics.
-      addMetric: + Add Metric
+      description: Edit queries in the panels for fetching the relevant metrics.
+      addPanel: + Add Panel
       query: Query
       queries: Queries
       visualization: Visualization
@@ -388,7 +426,7 @@ analyticsDashboard:
           creating: Creating
       errors:
         step1:
-          message: Error loading dashboard
+          message: Error loading dashboard(s)
           messageViewer: You cannot create a dashboard as a Viewer
         step2:
           messageViewer: You cannot configure a dashboard as a Viewer
@@ -442,18 +480,19 @@ analyticsDashboard:
     all: All
     warning:
       text: Unexpected bad things will happen if you don’t read this!
-      info: The data source seems to be connected to following Application dashboards. Dashboards will be unable to show metrics if the data source is deleted.
+      info: The data source seems to be connected to following monitoring dashboards. Dashboards will be unable to show metrics if the data source is deleted.
       connectedDashboards: 'Connected Dashboards :'
       showLess: Show Less Dashboards
       dashboards: Dashboards
     deletionSuccess: Successfully deleted the data source
     deletionError: Error while deleting the data source
     tableHead1: Status
-    tableHead2: Data source name
-    tableHead3: Data source type
+    tableHead2: Name
+    tableHead3: Type
     tableHead4: Last configured
-    tableHead5: Data source link
+    tableHead5: Link
     addDataSource: Add data source
+    dataSources: Data sources
     loading: Loading available data sources
     noRecords: No data source available
     fetchError: Unable to fetch data
@@ -480,10 +519,10 @@ analyticsDashboard:
   configureBanner:
     case-0:
       heading: No data source is configured yet for any agent
-      description: To configure your first application dashboard you need to connect a data source. Select "Add a data source" to connect.
+      description: To configure your first monitoring dashboard you need to connect a data source. Select "Add a data source" to connect.
     case-1:
       heading: Data source(s) has been added, now configure a dashboard
-      description: To configure your first application dashboard use the connect data sources of this project.
+      description: To configure your first monitoring dashboard use the connect data sources of this project.
   timeText:
     lastRun: Last run
     lastOpened: Last opened
@@ -528,7 +567,7 @@ homeViews:
       secondStep: 2. Download
       litmusctl: litmusctl
       thirdStep: 3. Paste and run the following command into the cluster console
-      agentRegister: $ litmusctl agent connect
+      agentRegister: $ litmusctl create agent
       copy: Copy
       done: Done
   projectInfoContainer:
@@ -540,8 +579,8 @@ homeViews:
   agentConfiguredHome:
     error: Error fetching the data!
     noWorkflow:
-      heading: Schedule your first workflow
-      description: Now it is successfully running on your Kubernetes cluster. Once you schedule chaos workflows, reliability analytics will be displayed here.
+      heading: Schedule your first Litmus workflow
+      description: Now it is successfully running on your Kubernetes cluster. Once you schedule chaos workflows, reliability statistics will be displayed here.
       schedule: Schedule a workflow
       explore: Explore pre defined workflows
     recentWorkflowRuns:
@@ -549,7 +588,7 @@ homeViews:
         cardTitle: Browse workflow
         resilienceRate: 'Overall resilience rate:'
         lastRun: 'Last Run:'
-        showAnalytics: Show the analytics
+        showStatistics: Show the statistics
         downloadManifest: Download manifest
       heading: Recent Workflow runs
       viewAll: View all workflows
@@ -560,7 +599,7 @@ homeViews:
       deploy: Deploy a new Agent
 
 chaosWorkflows:
-  browseAnalytics:
+  browseStatistics:
     workFlowComparisonTable:
       unableToFetch: Unable to fetch data
       noRecords: No records available
@@ -569,16 +608,20 @@ chaosWorkflows:
       resilienceScoreComparison: Resilience score comparison
       comparativeResults: Comparative results of selected workflows which ran successfully
       once: Once
-      seeAnalytics: See analytics
+      seeStatistics: See statistics
   browseSchedules:
     name: Name
     agent: Agent
     experiments: Experiments
     schedule: Schedule
     nextRun: Next Run
+    nonCron: Non cron workflow
+    runs: Runs
+    wfRuns: Workflow Runs
     regularity: Regularity
     startingDate: Starting Date
     lastRun: Last Run
+    lastUpdated: Last Updated
     regularityOnce: Once
     showExperiments: Show Experiments
     showSchedule: Show Schedule
@@ -612,12 +655,13 @@ chaosWorkflows:
     min: mins.
     sync: Sync Workflow
     terminate: Terminate Workflow
+    delete: Delete Workflow
     tableData:
       overallRR: 'Overall RR : '
       experimentsPassed: 'Experiments Passed : '
       showExperiments: Show Experiments
       showTheWorkflow: Show the workflow
-      showTheAnalytics: Show the analytics
+      showTheStatistics: Show the statistics
       na: NA
 
 settings:
@@ -744,10 +788,10 @@ settings:
       userStatus: User Status
       options:
         all: All
-        signedIn: Signed in
-        notSignedIn: Not Signed in
+        active: Active
+        deactivated: Deactivated
     tableCell:
-      status: Status
+      name: Name
       username: Username
       email: Email
       userCreated: User Created
@@ -818,8 +862,8 @@ settings:
     headingDesc: Your image registry for the workflow manifest
     defaultValues: Use the default values
     defaultText: All YAML files use these default values provided by Litmus. The values cannot be changed.
-    registry: 'Registry : '
-    repo: 'Repository : '
+    registry: 'Registry Server : '
+    repo: 'Registry : '
     repoType: 'Registry Type : '
     dockerio: 'docker.io'
     litmus: 'litmuschaos'
@@ -836,7 +880,7 @@ settings:
 
 workflowDetailsView:
   logs: Logs
-  headerDesc: Workflow dashboard of
+  headerDesc: Workflow statistics of
   headerMiniDesc: Description of the workflow
   argoWorkflow:
     loading: Loading Graph...
@@ -852,13 +896,14 @@ workflowDetailsView:
     header: Overall Workflow Description
     resilienceScore: Resilience Score
     Completed: Completed
+    status: Workflow Status
     runTime:
       runTimeHeader: Run Time
       startTime: 'Start Time :'
       endTime: 'End Time :'
     targets:
       targetsHeader: Target
-      cluster: 'Cluster :'
+      cluster: 'Agent :'
       namespace: 'Workflow Namespace :'
   workflowNodeInfo:
     name: Name
@@ -886,13 +931,13 @@ workflowDetailsView:
 
 createWorkflow:
   chooseWorkflow:
-    title: Start creating your chaos workflow
+    title: Start creating your Litmus workflow
     subtitle: Simulate the workflow run and see the suggested reliability score
     optionA: Create a new workflow from one of the pre-defined chaos workflow templates
     optionB: Create a new workflow by cloning an existing workflow
     optionC: Create a new workflow using the experiments from
     optionD: Import a workflow using YAML
-    myHubs: MyHub
+    myHubs: ChaosHubs
     saved: Name saved as
     modalHeading: Create your
     modalHeadingStrong: workflow name
@@ -901,7 +946,7 @@ createWorkflow:
     descriptionB: You have selected an existing workflow
     descriptionC: You have selected a MyHub workflow
     descriptionD: You have imported a workflow YAML
-    description2: Provide a name and description to the new workflow.
+    description2: Provide a name and description to the new Litmus workflow.
     edit: Edit Photo
     changeImage: Change workflow logo
     changeImgDescription: You can choose a logo from given below
@@ -911,18 +956,20 @@ createWorkflow:
     continueBtn: Continue
     validate: Workflow name can only contain - and alphanumeric characters
     pleaseAddExp: Please add experiments to see the data
-    revertSchedule: Revert Schedule
+    revertSchedule: Cleanup Chaos Resources
+    retainLogs: To retain experiment logs, set this as False.
     noTemplates: No template available.
     addTemplate: You can add a template from the scheduled workflows table.
     trueValue: 'True'
     falseValue: 'False'
+    enableRegistry: Enable Image Registry Changes
     table:
       head1: Sequence
       head2: Name
       head3: Namespace
       head4: Application
       head5: Probes
-    selectMyHub: Select MyHub
+    selectMyHub: Select ChaosHub
     label:
       workflowName: Workflow name
       desc: Description
@@ -937,9 +984,10 @@ createWorkflow:
     addPredefined: Add a pre-defined workflow to continue scheduling.
     searchTerm: Enter a correct search term
   reliabilityScore:
-    header: Adjust the weights of the experiments in the workflow
+    header: Adjust the weights of the experiments in the Litmus workflow
     info: You have selected
-    infoNext: tests in the “Kubernetes conformance test” workflow. Successful outcome of each test carries a certain weight. We have pre-selected weights for each test for you. However, you may review and modify the weightage against.
+    tests: tests in the
+    infoNext: workflow. Successful outcome of each test carries a certain weight. We have pre-selected weights for each test for you. However, you may review and modify the weightage against.
     infoNextStrong: These weights are used to calculate the resiliency score at the end of test.
     testInfo: Compare the importance of the items above and launch a demo version of Kubernetes conformance test to see how it works.
     button:
@@ -960,7 +1008,7 @@ createWorkflow:
         testPoints: Test Points
   scheduleWorkflow:
     header: Choose a chaos schedule
-    info: Choose the right time to start your first workflow. Below your first workflow. Below you can find any option convenient for you.
+    info: Choose the right time to start your first Litmus workflow. Below your first workflow. Below you can find any option convenient for you.
     min: min
     mins: mins
     at: at
@@ -1037,6 +1085,13 @@ createWorkflow:
       addNewProbe: '+ Add a new Probe'
       back: Back
       finish: Finish
+    env:
+      envHeading: Tune the environment variables of the experiment
+      showMoreEnv: Show more environment variables
+      showLessEnv: Show less environment variables
+      key: Key Tunables
+      addKey: Add a key-value pair
+      finish: Finish
     addProbe:
       heading: Add
       headingStrong: Probe
@@ -1052,6 +1107,7 @@ createWorkflow:
         interval: Interval
         polling: Polling interval
         initialDelay: Initial Delay Seconds
+        stop: stopOnFailure
         url: URL
       button:
         cancel: Cancel
@@ -1114,9 +1170,9 @@ createWorkflow:
       disabled: Currently Disabled
       schedulingNow: Scheduling now
       adjustedWeights: Adjusted Weights
-      clustername: Cluster Name
+      clustername: Agent Name
   workflowCluster:
-    activeCluster: Choose an active cluster
+    activeCluster: Choose an active agent
     none: None
 
 ######################################
@@ -1125,7 +1181,7 @@ createWorkflow:
 
 targets:
   connectHome:
-    head: Agents
+    head: ChaosAgents
     connectText: Connect the Agent
   copy:
     copy: Copy
@@ -1161,9 +1217,9 @@ workflowCluster:
     creatingNew: You are creating a
     creatingNewBold: new chaos workflow.
     selectAgent: Select a target Kubernetes Agent to run this workflow.
-    selectCluster: Choose Active Cluster
+    selectCluster: Choose Active Agent
     select: Select and Continue
-    snackbar: No Cluster Registered With Your Project ID, Please Wait...
+    snackbar: No Agent Registered With Your Project ID, Please Wait...
     formControl:
       # For Header
       menu: All
@@ -1178,19 +1234,20 @@ workflowCluster:
       name: Name
       time: Time
       run: Last Workflow run
+      agentScope: Agent Scope
       connectionDate: Connection Date
       noWorkflows: No. of Workflows
       noSchedules: No. of Schedules
       fetchingError: Unable to fetch data
       recordAvailable: No records available
       disconnect: Disconnect
-      clusterInfo: Cluster information
-      about: About Litmus Cluster
+      clusterInfo: Agent information
+      about: About Litmus Agent
       back: Back
 workflowAgent:
   header:
-    chooseAgent: Choose Agent to send the chaos workflow to
-    creatingNew: You are creating a new chaos workflow
+    chooseAgent: Choose Agent to send the Litmus workflow to
+    creatingNew: You are creating a new Litmus workflow
     selectAgent: Select a target Kubernetes cluster to run this workflow
   search:
     placeholder: Search
@@ -1202,7 +1259,6 @@ workflows:
   runs: Runs
   schedules: Schedules
   templates: Templates
-  analytics: Analytics
   scheduleAWorkflow: Schedule a workflow
 
 browseTemplate:
@@ -1393,15 +1449,15 @@ usage:
     projectHeader: Projects
     projectSubtitle: Total number of Litmus projects.
     agentHeader: Agents
-    agentSubtitle: Total number of Litmus agents connected to Litmus center.
+    agentSubtitle: Total number of ChaosAgents connected to ChaosCenter.
     agentClusterScope: cluster scope
     agentNamespaceScope: namespace scope
     workflowScheduleHeader: Workflow Schedules
-    workflowScheduleSubtitle: Total number of chaos workflows scheduled in this month.
+    workflowScheduleSubtitle: Total number of scheduled workflows.
     workflowRunHeader: Workflow Runs
-    workflowRunSubtitle: Number of workflows ran this month.
+    workflowRunSubtitle: Total number of workflow runs.
     experimentRunHeader: Experiments Runs
-    experimentRunSubtitle: Total number of chaos experiments ran this month.
+    experimentRunSubtitle: Total number of chaos experiment runs.
   table:
     project: Projects
     owner: Project Owner

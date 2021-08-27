@@ -3,6 +3,7 @@ enum WorkflowRunStatus {
   Failed
   Running
   Succeeded
+  Terminated
 }
 
 input DateRange {
@@ -41,10 +42,16 @@ input GetWorkflowRunsInput {
   filter: WorkflowRunFilterInput
 }
 
+type weightages {
+  experiment_name: String!
+  weightage: Int!
+}
+
 type WorkflowRun {
   workflow_run_id: ID!
   workflow_id: ID!
   cluster_name: String!
+  weightages: [weightages!]!
   last_updated: String!
   project_id: ID!
   cluster_id: ID!
@@ -100,7 +107,6 @@ type Workflow {
   cluster_id: ID!
   cluster_type: String!
   isRemoved: Boolean!
-  workflow_runs: [WorkflowRuns]
 }
 
 type ListWorkflowsOutput {

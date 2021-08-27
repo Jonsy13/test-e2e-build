@@ -9,6 +9,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   toolBar: {
     height: '4.9rem',
     display: 'flex',
+    justifyContent: 'space-between',
     background: theme.palette.header,
     padding: theme.spacing(0, 7.5),
     '& *': {
@@ -19,19 +20,18 @@ const useStyles = makeStyles((theme: Theme) => ({
       marginLeft: theme.spacing(15),
     },
   },
-  // Logo
-  litmusDiv: {
+  details: {
     display: 'flex',
+    justifyContent: 'flex-end',
   },
+  // Logo
   homeLink: {
     textDecoration: 'none',
   },
-  logo: {
-    left: theme.spacing(4.375),
-  },
-  litmusHome: {
+  chaosText: {
     fontSize: '1.625rem',
-    marginLeft: theme.spacing(1.75),
+    color: theme.palette.text.secondary,
+    fontWeight: 600,
   },
   projectDropdown: {
     display: 'flex',
@@ -59,6 +59,24 @@ const useStyles = makeStyles((theme: Theme) => ({
     '&:hover': {
       background: `${theme.palette.cards.highlight} !important`,
     },
+  },
+  selectedWrapper: {
+    width: '2rem',
+    height: '2rem',
+    borderRadius: '1rem',
+    backgroundColor: theme.palette.background.paper,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  notSelectedWrapper: {
+    width: '2rem',
+    height: '2rem',
+    borderRadius: '1rem',
+    backgroundColor: theme.palette.success.main,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   active: {
     background: `${theme.palette.cards.highlight} !important`,

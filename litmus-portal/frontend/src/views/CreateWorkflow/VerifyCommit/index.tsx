@@ -368,7 +368,7 @@ const VerifyCommit = forwardRef(
                   </Typography>
                 </div>
                 <img
-                  src="/icons/b-finance.svg"
+                  src="./icons/b-finance.svg"
                   alt="bfinance"
                   className={classes.bfinIcon}
                 />
@@ -522,8 +522,6 @@ const VerifyCommit = forwardRef(
                               'createWorkflow.verifyCommit.test'
                             )}`}
                             testValue={Test.weight}
-                            spacing={false}
-                            icon={false}
                           />
                         ))}
                       </div>
@@ -585,7 +583,7 @@ const VerifyCommit = forwardRef(
             }
           >
             <div className={classes.modal}>
-              <img src="/icons/finish.svg" alt="mark" />
+              <img src="./icons/finish.svg" alt="mark" />
               <div className={classes.heading}>
                 {t('workflowStepper.aNewChaosWorkflow')}
                 <br />
@@ -622,7 +620,7 @@ const VerifyCommit = forwardRef(
             }
           >
             <div className={classes.modal}>
-              <img src="/icons/red-cross.svg" alt="mark" />
+              <img src="./icons/red-cross.svg" alt="mark" />
               <div className={classes.heading}>
                 <strong>{t('workflowStepper.workflowFailed')}</strong>
               </div>

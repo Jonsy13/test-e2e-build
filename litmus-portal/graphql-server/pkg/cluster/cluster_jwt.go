@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 )
 
 var secret = os.Getenv("JWT_SECRET")
 
-// ClusterCreateJWT generates jwt used in cluster regis
+// ClusterCreateJWT generates jwt used in cluster registration
 func ClusterCreateJWT(id string) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["cluster_id"] = id

@@ -9,7 +9,7 @@ import {
   Typography,
   useTheme,
 } from '@material-ui/core';
-import { LitmusCard, RadioButton, Search } from 'litmus-ui';
+import { LitmusCard, Search } from 'litmus-ui';
 import localforage from 'localforage';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +18,7 @@ import { GET_HUB_STATUS, GET_PREDEFINED_WORKFLOW_LIST } from '../../../graphql';
 import { MyHubDetail } from '../../../models/graphql/user';
 import { HubStatus } from '../../../models/redux/myhub';
 import { getProjectID } from '../../../utils/getSearchParams';
+import PreDefinedRadio from './PreDefinedRadio';
 import useStyles, { MenuProps } from './styles';
 
 interface ChooseWorkflowRadio {
@@ -128,12 +129,12 @@ const ChoosePreDefinedExperiments: React.FC<ChoosePreDefinedExperimentsProps> =
           setAvailableHubs(hubDetails);
         }
         data.getHubStatus.forEach((hubData) => {
-          if (hubData.HubName.toLowerCase() === 'chaos hub') {
-            setSelectedHub('Chaos Hub');
-            localforage.setItem('selectedHub', 'Chaos Hub');
+          if (hubData.HubName.toLowerCase() === 'litmus chaoshub') {
+            setSelectedHub('Litmus ChaosHub');
+            localforage.setItem('selectedHub', 'Litmus ChaosHub');
             getPredefinedWorkflow({
               variables: {
-                hubname: 'Chaos Hub',
+                hubname: 'Litmus ChaosHub',
                 projectid: selectedProjectID,
               },
             });
@@ -158,7 +159,7 @@ const ChoosePreDefinedExperiments: React.FC<ChoosePreDefinedExperimentsProps> =
                   onChange={(e) => {
                     handleMyHubChange(e);
                   }}
-                  label="Select MyHub"
+                  label="Select ChaosHub"
                   MenuProps={MenuProps}
                 >
                   {availableHubs.map((hubs) => (
@@ -222,24 +223,10 @@ const ChoosePreDefinedExperiments: React.FC<ChoosePreDefinedExperimentsProps> =
                       borderColor={palette.border.main}
                       className={classes.predefinedWorkflowCard}
                     >
-                      <RadioButton value={wfData}>
-                        {/* Wrap the entire body with 100% width to divide into 40-60 */}
-                        <div id="body">
-                          {/* Left Div => Icon + Name of Workflow */}
-                          <div id="left-div">
-                            <img
-                              className={classes.experimentIcon}
-                              src={`${config.grahqlEndpoint}/icon/${selectedProjectID}/${selectedHub}/predefined/${wfData}.png`}
-                              alt="Experiment Icon"
-                            />
-                            <Typography
-                              className={classes.predefinedWorkflowName}
-                            >
-                              {wfData}
-                            </Typography>
-                          </div>
-                        </div>
-                      </RadioButton>
+                      <PreDefinedRadio
+                        workflowName={wfData}
+                        iconURL={`${config.grahqlEndpoint}/icon/${selectedProjectID}/${selectedHub}/predefined/${wfData}.png`}
+                      />
                     </LitmusCard>
                   ))
                 ) : (

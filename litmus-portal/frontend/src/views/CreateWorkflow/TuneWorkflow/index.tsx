@@ -1,11 +1,12 @@
 import { useLazyQuery } from '@apollo/client';
 import { Snackbar, Typography } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Alert, Color } from '@material-ui/lab';
 import { ButtonFilled, ButtonOutlined, Modal } from 'litmus-ui';
 import localforage from 'localforage';
 import React, {
   Dispatch,
   forwardRef,
+  lazy,
   SetStateAction,
   useEffect,
   useImperativeHandle,
@@ -17,7 +18,6 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import YAML from 'yaml';
-import YamlEditor from '../../../components/YamlEditor/Editor';
 import Row from '../../../containers/layouts/Row';
 import Width from '../../../containers/layouts/Width';
 import {
@@ -43,11 +43,13 @@ import {
   updateManifestImage,
   updateNamespace,
 } from '../../../utils/yamlUtils';
-import AddExperimentModal from './AddExperimentModal';
 import useStyles from './styles';
 import WorkflowPreview from './WorkflowPreview';
-import WorkflowSequence from './WorkflowSequence';
 import WorkflowTable from './WorkflowTable';
+
+const AddExperimentModal = lazy(() => import('./AddExperimentModal'));
+const WorkflowSequence = lazy(() => import('./WorkflowSequence'));
+const YamlEditor = lazy(() => import('../../../components/YamlEditor/Editor'));
 
 interface WorkflowProps {
   name: string;
@@ -76,6 +78,7 @@ interface ChartName {
 
 interface ChildRef {
   onNext: () => void;
+  configurationStepperRef: () => void;
 }
 
 interface WorkflowExperiment {
@@ -87,6 +90,7 @@ interface AlertBoxProps {
   message: string;
   isOpen: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  type: string;
 }
 
 const TuneWorkflow = forwardRef((_, ref) => {
@@ -106,6 +110,8 @@ const TuneWorkflow = forwardRef((_, ref) => {
   const [confirmEdit, setConfirmEdit] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isEditorSaveAlertOpen, setIsEditorSaveAlertOpen] = useState(false);
+  const [isConfigurationAlertOpen, setIsConfigurationAlertOpen] =
+    useState(false);
   const [yamlValid, setYamlValid] = useState(true);
   const [editSequence, setEditSequence] = useState(false);
   const [isVisualizationComplete, setIsVisualizationComplete] =
@@ -183,14 +189,12 @@ const TuneWorkflow = forwardRef((_, ref) => {
   const [getTemplate] = useLazyQuery(GET_TEMPLATE_BY_ID, {
     onCompleted: (data) => {
       const parsedYAML = YAML.parse(data.GetTemplateManifestByID.manifest);
+
       const updatedManifestImage = updateManifestImage(
         parsedYAML,
         imageRegistryData
       );
-      const updatedManifest = updateNamespace(
-        YAML.parse(updatedManifestImage),
-        namespace
-      );
+      const updatedManifest = updateNamespace(updatedManifestImage, namespace);
 
       workflowAction.setWorkflowManifest({
         manifest: YAML.stringify(updatedManifest),
@@ -391,17 +395,21 @@ const TuneWorkflow = forwardRef((_, ref) => {
         },
       },
     });
-
     setAddExpModal(false);
   };
 
-  const AlertBox: React.FC<AlertBoxProps> = ({ message, isOpen, setOpen }) => (
+  const AlertBox: React.FC<AlertBoxProps> = ({
+    message,
+    isOpen,
+    setOpen,
+    type,
+  }) => (
     <Snackbar
       open={isOpen}
       autoHideDuration={6000}
       onClose={() => setOpen(false)}
     >
-      <Alert onClose={() => setOpen(false)} severity="error">
+      <Alert onClose={() => setOpen(false)} severity={type as Color}>
         {message}
       </Alert>
     </Snackbar>
@@ -617,6 +625,11 @@ const TuneWorkflow = forwardRef((_, ref) => {
         alert.changeAlertState(true); // Custom Workflow has no experiments
         return false;
       }
+      if ((childRef.current.configurationStepperRef() as unknown) === false) {
+        // The Configuration stepper is open
+        setIsConfigurationAlertOpen(true); // Set Alert to True
+        return false; // Disable Next
+      }
     }
     return true;
   }
@@ -648,11 +661,19 @@ const TuneWorkflow = forwardRef((_, ref) => {
         isOpen={isEditorSaveAlertOpen}
         setOpen={setIsEditorSaveAlertOpen}
         message="Please Save the changes in the editor to proceed forward"
+        type="error"
+      />
+      <AlertBox
+        isOpen={isConfigurationAlertOpen}
+        setOpen={setIsConfigurationAlertOpen}
+        message="Please Save Changes made in the Configuration Wizard"
+        type="error"
       />
       <AlertBox
         isOpen={isAlertOpen}
         setOpen={setIsAlertOpen}
         message="The YAML contains errors, resolve them first to proceed"
+        type="error"
       />
       {YAMLModal ? (
         <>
@@ -795,6 +816,7 @@ const TuneWorkflow = forwardRef((_, ref) => {
             {/* Edit Button */}
             {manifest !== '' && (
               <ButtonOutlined
+                data-cy="EditSequenceButton"
                 disabled={isVisualizationComplete}
                 onClick={() => setEditSequence(true)}
               >

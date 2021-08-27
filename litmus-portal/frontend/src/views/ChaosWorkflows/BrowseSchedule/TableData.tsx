@@ -16,7 +16,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ReplayIcon from '@material-ui/icons/Replay';
 import parser from 'cron-parser';
 import cronstrue from 'cronstrue';
-import { ButtonFilled, ButtonOutlined, Modal } from 'litmus-ui';
+import { ButtonFilled, ButtonOutlined, Icon, Modal } from 'litmus-ui';
 import moment from 'moment';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -38,12 +38,14 @@ interface TableDataProps {
   data: ScheduledWorkflow;
   deleteRow: (wfid: string) => void;
   handleToggleSchedule: (schedule: ScheduledWorkflow) => void;
+  setWorkflowName: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const TableData: React.FC<TableDataProps> = ({
   data,
   deleteRow,
   handleToggleSchedule,
+  setWorkflowName,
 }) => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -304,7 +306,7 @@ const TableData: React.FC<TableDataProps> = ({
             </Typography>
             <Typography className={classes.scheduleDetailsFlex}>
               <span className={classes.boldText}>
-                {t('chaosWorkflows.browseSchedules.lastRun')} :
+                {t('chaosWorkflows.browseSchedules.lastUpdated')} :
               </span>
               <span className={classes.scheduleDetailsValue}>
                 {timeDifferenceForDate(data.updated_at)}
@@ -335,15 +337,37 @@ const TableData: React.FC<TableDataProps> = ({
             <Typography>
               {t('chaosWorkflows.browseSchedules.scheduleIsDisabled')}
             </Typography>
+          ) : data.cronSyntax !== '' ? (
+            <Typography>
+              {moment(
+                parser.parseExpression(data.cronSyntax).next().toString()
+              ).format('MMMM Do YYYY, h:mm:ss a')}
+            </Typography>
           ) : (
-            data.cronSyntax !== '' && (
-              <Typography>
-                {parser.parseExpression(data.cronSyntax).next().toString()}
-              </Typography>
-            )
+            <Typography>
+              {t('chaosWorkflows.browseSchedules.nonCron')}
+            </Typography>
           )}
         </span>
       </TableCell>
+
+      <TableCell>
+        <IconButton
+          onClick={() => {
+            tabs.changeWorkflowsTabs(0);
+            setWorkflowName(data.workflow_name);
+          }}
+          data-cy="showSchedules"
+        >
+          <div>
+            <Icon name="workflow" />
+            <Typography className={classes.runs}>
+              {t('chaosWorkflows.browseSchedules.runs')}
+            </Typography>
+          </div>
+        </IconButton>
+      </TableCell>
+
       <TableCell className={classes.menuCell}>
         <IconButton
           aria-label="more"
@@ -367,7 +391,7 @@ const TableData: React.FC<TableDataProps> = ({
             <MenuItem value="Edit_Schedule" onClick={() => editSchedule()}>
               <div className={classes.expDiv}>
                 <img
-                  src="/icons/Edit.svg"
+                  src="./icons/Edit.svg"
                   alt="Edit Schedule"
                   className={classes.btnImg}
                 />
@@ -402,7 +426,7 @@ const TableData: React.FC<TableDataProps> = ({
               >
                 <div className={classes.expDiv}>
                   <img
-                    src="/icons/disableSchedule.svg"
+                    src="./icons/disableSchedule.svg"
                     alt="Delete Schedule"
                     className={classes.btnImg}
                   />
@@ -426,7 +450,7 @@ const TableData: React.FC<TableDataProps> = ({
               >
                 <div className={classes.expDiv}>
                   <img
-                    src="/icons/disableSchedule.svg"
+                    src="./icons/disableSchedule.svg"
                     alt="Enable Schedule"
                     className={classes.btnImg}
                   />
@@ -471,7 +495,7 @@ const TableData: React.FC<TableDataProps> = ({
             <MenuItem value="Analysis" onClick={() => setIsModalOpen(true)}>
               <div className={classes.expDiv}>
                 <img
-                  src="/icons/deleteSchedule.svg"
+                  src="./icons/deleteSchedule.svg"
                   alt="Delete Schedule"
                   className={classes.btnImg}
                 />

@@ -108,6 +108,32 @@ func DeleteWorkflow(ctx context.Context, workflow_id *string, workflowRunID *str
 	return false, err
 }
 
+func TerminateWorkflow(ctx context.Context, workflow_id *string, workflowRunID *string, r *store.StateData) (bool, error) {
+	query := bson.D{{"workflow_id", workflow_id}}
+	workflow, err := dbOperationsWorkflow.GetWorkflow(query)
+	if err != nil {
+		return false, err
+	}
+
+	if *workflow_id != "" && *workflowRunID != "" {
+		for _, workflow_run := range workflow.WorkflowRuns {
+			if workflow_run.WorkflowRunID == *workflowRunID {
+				workflow_run.Completed = true
+				workflow_run.Phase = "Terminated"
+			}
+		}
+
+		err = ops.ProcessWorkflowRunDelete(query, workflowRunID, workflow, r)
+		if err != nil {
+			return false, err
+		}
+
+		return true, nil
+
+	}
+	return false, errors.New("invalid input, workflow and workflow run id cannot be empty")
+}
+
 func UpdateWorkflow(ctx context.Context, input *model.ChaosWorkFlowInput, r *store.StateData) (*model.ChaosWorkFlowResponse, error) {
 	input, wfType, err := ops.ProcessWorkflow(input)
 	if err != nil {
@@ -175,9 +201,7 @@ func QueryWorkflowRuns(input model.GetWorkflowRunsInput) (*model.GetWorkflowsOut
 	includeAllFromWorkflow := bson.D{
 		{"workflow_id", 1},
 		{"workflow_name", 1},
-		{"workflow_manifest", 1},
 		{"cronSyntax", 1},
-		{"workflow_description", 1},
 		{"weightages", 1},
 		{"isCustomWorkflow", 1},
 		{"updated_at", 1},
@@ -392,11 +416,15 @@ func QueryWorkflowRuns(input model.GetWorkflowRunsInput) (*model.GetWorkflowsOut
 	for _, workflow := range workflows[0].FlattenedWorkflowRuns {
 		workflowRun := workflow.WorkflowRuns
 
+		var Weightages []*model.Weightages
+		copier.Copy(&Weightages, &workflow.Weightages)
+
 		newWorkflowRun := model.WorkflowRun{
 			WorkflowName:       workflow.WorkflowName,
 			WorkflowID:         workflow.WorkflowID,
 			WorkflowRunID:      workflowRun.WorkflowRunID,
 			LastUpdated:        workflowRun.LastUpdated,
+			Weightages:         Weightages,
 			ProjectID:          workflow.ProjectID,
 			ClusterID:          workflow.ClusterID,
 			Phase:              workflowRun.Phase,
@@ -461,6 +489,14 @@ func QueryListWorkflow(workflowInput model.ListWorkflowsInput) (*model.ListWorkf
 		}},
 	}
 	pipeline = append(pipeline, matchWfIsRemovedStage)
+
+	// Filtering out workflow runs
+	excludeWfRun := bson.D{
+		{"$project", bson.D{
+			{"workflow_runs", 0},
+		}},
+	}
+	pipeline = append(pipeline, excludeWfRun)
 
 	// Filtering based on multiple parameters
 	if workflowInput.Filter != nil {
@@ -584,8 +620,6 @@ func QueryListWorkflow(workflowInput model.ListWorkflowsInput) (*model.ListWorkf
 
 		var Weightages []*model.Weightages
 		copier.Copy(&Weightages, &workflow.Weightages)
-		var WorkflowRuns []*model.WorkflowRuns
-		copier.Copy(&WorkflowRuns, &workflow.WorkflowRuns)
 
 		newChaosWorkflows := model.Workflow{
 			WorkflowID:          workflow.WorkflowID,
@@ -602,7 +636,6 @@ func QueryListWorkflow(workflowInput model.ListWorkflowsInput) (*model.ListWorkf
 			ClusterName:         cluster.ClusterName,
 			ClusterID:           cluster.ClusterID,
 			ClusterType:         cluster.ClusterType,
-			WorkflowRuns:        WorkflowRuns,
 		}
 		result = append(result, &newChaosWorkflows)
 	}
@@ -865,7 +898,7 @@ func ListWorkflowTemplate(ctx context.Context, projectID string) ([]*model.Manif
 	return templateList, err
 }
 
-// QueryTemplateWorkflowID is used to fetch the workflow template with template id
+// QueryTemplateWorkflowByID is used to fetch the workflow template with template id
 func QueryTemplateWorkflowByID(ctx context.Context, templateID string) (*model.ManifestTemplate, error) {
 	template, err := dbSchemaWorkflowTemplate.GetTemplateByTemplateID(ctx, templateID)
 	if err != nil {

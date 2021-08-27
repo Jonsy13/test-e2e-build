@@ -104,10 +104,13 @@ func usageHelper(ctx context.Context, query model.UsageQuery) (AggregateData, er
 		},
 		bson.D{
 			{"$lookup", bson.M{
-				"from":         "workflow-collection",
-				"localField":   "_id",
-				"foreignField": "project_id",
-				"as":           "wfData",
+				"from": "workflow-collection",
+				"let":  bson.M{"projectId": "$_id"},
+				"pipeline": bson.A{
+					bson.M{"$match": bson.M{"$expr": bson.M{"$eq": bson.A{"$project_id", "$$projectId"}}}},
+					bson.M{"$project": bson.M{"created_at": 1, "workflow_runs.total_experiments": 1, "workflow_runs.last_updated": 1}},
+				},
+				"as": "wfData",
 			}}},
 		bson.D{{"$addFields", bson.M{
 			"workflows": bson.M{
@@ -207,6 +210,21 @@ func usageHelper(ctx context.Context, query model.UsageQuery) (AggregateData, er
 							"cond":  bson.M{"$eq": bson.A{"$$cluster.is_removed", false}},
 						}},
 				},
+				"active": bson.M{
+					"$size": bson.M{
+						"$filter": bson.M{
+							"input": "$cluster",
+							"as":    "cluster",
+							"cond": bson.M{"$and": bson.A{
+								bson.M{
+									"$eq": bson.A{"$$cluster.is_active", true},
+								},
+								bson.M{
+									"$eq": bson.A{"$$cluster.is_removed", false},
+								},
+							},
+							}},
+					}},
 			},
 			"workflows": bson.M{
 				"schedules": "$workflows.schedules",
@@ -233,6 +251,7 @@ func usageHelper(ctx context.Context, query model.UsageQuery) (AggregateData, er
 						"ns":        bson.M{"$sum": "$agents.ns"},
 						"cluster":   bson.M{"$sum": "$agents.cluster"},
 						"total":     bson.M{"$sum": "$agents.total"},
+						"active":    bson.M{"$sum": "$agents.active"},
 						"schedules": bson.M{"$sum": "$workflows.schedules"},
 						"runs":      bson.M{"$sum": "$workflows.runs"},
 						"expRuns":   bson.M{"$sum": "$workflows.expRuns"},
@@ -242,6 +261,7 @@ func usageHelper(ctx context.Context, query model.UsageQuery) (AggregateData, er
 							"ns":      "$ns",
 							"cluster": "$cluster",
 							"total":   "$total",
+							"active":  "$active",
 						},
 						"workflows": bson.M{
 							"schedules": "$schedules",
@@ -249,7 +269,7 @@ func usageHelper(ctx context.Context, query model.UsageQuery) (AggregateData, er
 							"expRuns":   "$expRuns",
 						}, "_id": 0}}}}}},
 	}
-	cursor, err := dbOperationsProject.GetAggregateProjects(ctx, pipeline)
+	cursor, err := dbOperationsProject.GetAggregateProjects(ctx, pipeline, nil)
 	if err != nil {
 		return AggregateData{}, err
 	}
