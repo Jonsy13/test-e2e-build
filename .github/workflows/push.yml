@@ -58,7 +58,7 @@ jobs:
           sha=${GITHUB_SHA::8}
           ts=$(date +%s)
           echo "::set-output name=SHA_TAG::${branch}-${sha}-${ts}"  
-          echo "::set-output name=TAG::#{branch}-ci"
+          echo "::set-output name=TAG::${branch}-ci"
           echo "::set-output name=TIME_STAMP::${ts}"
 
   docker-build-and-push-graphql-server:
@@ -262,12 +262,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Downloading image artficate
-        uses: actions/download-artifact@v2
-        with:
-          name: env_artifact
-          path: litmus-portal
 
       - name: Set up Docker Buildx
         id: buildx
