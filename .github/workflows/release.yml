@@ -57,7 +57,7 @@ jobs:
         with:
           push: true
           file: graphql-server/Dockerfile
-          context: ./graphql-server/
+          context: graphql-server/
           platforms: ${{ secrets.PLATFORMS }}
           tags: ${{ secrets.REPONAME }}/${{ env.GRAPHQL_SERVER_IMAGE }}:${{ env.RELEASE_TAG }}
 
