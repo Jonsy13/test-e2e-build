@@ -56,8 +56,8 @@ jobs:
           RELEASE_TAG: ${{ needs.get-envs.outputs.RELEASE_TAG }}
         with:
           push: true
-          file: ./graphql-server/Dockerfile
-          context: ./graphql-server
+          file: ./litmus-portal/graphql-server/Dockerfile
+          context: ./litmus-portal/graphql-server
           platforms: ${{ secrets.PLATFORMS }}
           tags: ${{ secrets.REPONAME }}/${{ env.GRAPHQL_SERVER_IMAGE }}:${{ env.RELEASE_TAG }}
 #   docker-build-and-push-authentication-server:
