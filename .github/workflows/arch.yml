@@ -1,58 +1,58 @@
-name: Caching with npm
+# name: Caching with npm
 
-on: push
+# on: push
 
-defaults:
-  run:
-    working-directory: litmus-portal/frontend
-    shell: bash
+# defaults:
+#   run:
+#     working-directory: litmus-portal/frontend
+#     shell: bash
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
+#     steps:
+#       - uses: actions/checkout@v2
 
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        with:
-          # npm cache files are stored in `~/.npm` on Linux
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+#       - name: Cache node modules
+#         uses: actions/cache@v2
+#         env:
+#           cache-name: cache-node-modules
+#         with:
+#           # npm cache files are stored in `~/.npm` on Linux
+#           path: ~/.npm
+#           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+#           restore-keys: |
+#             ${{ runner.os }}-build-${{ env.cache-name }}-
+#             ${{ runner.os }}-build-
+#             ${{ runner.os }}-
 
-      - name: Install Dependencies
-        run: npm ci
+#       - name: Install Dependencies
+#         run: npm ci
 
-      - name: Build
-        run: CI=false npm run build
+#       - name: Build
+#         run: CI=false npm run build
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
+#       - name: Set up Docker Buildx
+#         id: buildx
+#         uses: docker/setup-buildx-action@v1
+#         with:
+#           version: latest
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#       - name: Login to DockerHub
+#         uses: docker/login-action@v1
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Push frontend docker image
-        env:
-          FRONTEND_IMAGE: "frontend-arm64"
-          IMG_TAG: "ci"
-          PLATFORMS: "arm64"
-          REPONAME: "jonsy13"
-          PUBLIC_URL: ""
-        run: |
-          ls
-          timestamp=`date "+%s"`
-          docker buildx build . -f Dockerfile.arm64 --progress plane --push --no-cache --platform ${PLATFORMS} -t ${REPONAME}/${FRONTEND_IMAGE}:${IMG_TAG} --build-arg REACT_APP_KB_CHAOS_VERSION=${IMG_TAG} --build-arg REACT_APP_BUILD_TIME="${timestamp}" --build-arg REACT_APP_HUB_BRANCH_NAME="v1.13.x" --build-arg PUBLIC_URL="${PUBLIC_URL}";
+#       - name: Push frontend docker image
+#         env:
+#           FRONTEND_IMAGE: "frontend-arm64"
+#           IMG_TAG: "ci"
+#           PLATFORMS: "arm64"
+#           REPONAME: "jonsy13"
+#           PUBLIC_URL: ""
+#         run: |
+#           ls
+#           timestamp=`date "+%s"`
+#           docker buildx build . -f Dockerfile.arm64 --progress plane --push --no-cache --platform ${PLATFORMS} -t ${REPONAME}/${FRONTEND_IMAGE}:${IMG_TAG} --build-arg REACT_APP_KB_CHAOS_VERSION=${IMG_TAG} --build-arg REACT_APP_BUILD_TIME="${timestamp}" --build-arg REACT_APP_HUB_BRANCH_NAME="v1.13.x" --build-arg PUBLIC_URL="${PUBLIC_URL}";
