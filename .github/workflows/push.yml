@@ -2,6 +2,7 @@ name: push-pipeline
 on:
   push:
     branches:
+      - master
       - staging
     tags-ignore:
       - "**"

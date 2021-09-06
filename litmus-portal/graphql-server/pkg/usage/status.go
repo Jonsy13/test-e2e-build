@@ -14,7 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-//GetUsage returns the portals usage overview
+//GetUsage returns the portals usage overvi
 func GetUsage(ctx context.Context, query model.UsageQuery) (*model.UsageData, error) {
 	data, err := usageHelper(ctx, query)
 	if err != nil {
