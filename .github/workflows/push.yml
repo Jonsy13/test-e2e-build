@@ -14,12 +14,12 @@ defaults:
 
 # All Image names are provided here as envs. (Will be available in all jobs)
 env:
-  GRAPHQL_SERVER_IMAGE: "litmusportal-server"
-  AUTHENTICATION_SERVER_IMAGE: "litmusportal-auth-server"
-  FRONTEND_IMAGE: "litmusportal-frontend" #Not getting used
-  SUBSCRIBER_IMAGE: "litmusportal-subscriber"
-  EVENT_TRACKER: "litmusportal-event-tracker"
-  UPGRADE_AGENT_CP: "litmusportal-upgrade-agent-cp"
+  GRAPHQL_SERVER_IMAGE: "clc-server"
+  AUTHENTICATION_SERVER_IMAGE: "clc-auth-server"
+  FRONTEND_IMAGE: "clc-frontend" #Not getting used
+  SUBSCRIBER_IMAGE: "clc-subscriber"
+  EVENT_TRACKER: "clc-event-tracker"
+  UPGRADE_AGENT_CP: "clc-upgrade-agent-cp"
 
 jobs:
   backend-checks:
@@ -277,9 +277,9 @@ jobs:
       matrix:
         frontend:
           [
-            { "image_name": "litmusportal-frontend", "path": "" },
+            { "image_name": "clc-frontend", "path": "" },
             {
-              "image_name": "litmusportal-path-litmuschaos",
+              "image_name": "clc-frontend-path-litmuschaos",
               "path": "/litmuschaos",
             },
           ]
