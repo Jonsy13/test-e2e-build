@@ -13,8 +13,7 @@ import {
 import { history } from '../../redux/configureStore';
 import { getToken, getUserId, getUserRole } from '../../utils/auth';
 import { getProjectID, getProjectRole } from '../../utils/getSearchParams';
-const Scaffold = lazy(()=> import('../layouts/Scaffold'));
-
+const Scaffold = lazy(() => import('../layouts/Scaffold'));
 const ErrorPage = lazy(() => import('../../pages/ErrorPage'));
 const Workflows = lazy(() => import('../../pages/Workflows'));
 const CreateWorkflow = lazy(() => import('../../pages/CreateWorkflow'));
@@ -143,8 +142,8 @@ const Routes: React.FC = () => {
   return (
     <>
       {!projectValidation && !loading && (
-          <SuspenseLoader style={{ height: '80vh' }}>
-            <Scaffold>
+        <SuspenseLoader style={{ height: '80vh' }}>
+          <Scaffold>
             <Switch>
               <Route exact path="/home" component={HomePage} />
               <Redirect exact path="/" to="/home" />
@@ -260,8 +259,8 @@ const Routes: React.FC = () => {
               <Redirect exact path="/api-doc" to="/api-doc/index.html" />
               <Redirect to="/404" />
             </Switch>
-            </Scaffold>
-          </SuspenseLoader>
+          </Scaffold>
+        </SuspenseLoader>
       )}
     </>
   );
