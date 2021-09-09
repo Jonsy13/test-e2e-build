@@ -1,4 +1,5 @@
-import { createStyles, Tab, withStyles } from '@material-ui/core';
+import { createStyles, withStyles } from '@material-ui/core/styles';
+import Tab from '@material-ui/core/Tab';
 import React, { ReactElement } from 'react';
 
 interface TabPanelProps {

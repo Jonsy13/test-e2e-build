@@ -1,9 +1,5 @@
-import {
-  createStyles,
-  makeStyles,
-  TableCell,
-  withStyles,
-} from '@material-ui/core';
+import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
+import TableCell from '@material-ui/core/TableCell';
 
 const useStyles = makeStyles((theme) => ({
   root: {
