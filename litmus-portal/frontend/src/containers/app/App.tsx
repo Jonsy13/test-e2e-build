@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-// import { LitmusThemeProvider } from 'litmus-ui';
+import { LitmusThemeProvider } from 'litmus-ui';
 import React, { lazy, useState } from 'react';
 import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import { SuspenseLoader } from '../../components/SuspenseLoader';
@@ -140,7 +140,7 @@ const Routes: React.FC = () => {
   });
 
   const { loading: projectValidation } = useQuery<ProjectDetail>(GET_PROJECT, {
-    skip: getToken() === '',
+    skip: (projectID !== '' && projectID !== undefined) || getToken() === '',
     variables: { projectID },
     onCompleted: (data) => {
       if (data?.getProject) {
@@ -323,12 +323,12 @@ const Routes: React.FC = () => {
 
 function App() {
   return (
-    // <LitmusThemeProvider>
-    <Router history={history}>
-      {/* <Routes /> */}
-      <Routes />
-    </Router>
-    // </LitmusThemeProvider>
+    <LitmusThemeProvider>
+      <Router history={history}>
+        {/* <Routes /> */}
+        <Routes />
+      </Router>
+    </LitmusThemeProvider>
   );
 }
 

@@ -27,7 +27,8 @@ import {
   getProjectID,
   getProjectRole,
 } from '../../../../utils/getSearchParams';
-import useStyles, { StyledTableCell } from './styles';
+import useStyles from './styles';
+import { StyledTableCell } from '../../../../components/StyledTableCell';
 
 interface TableDataProps {
   data: ListDashboardResponse;

@@ -3,7 +3,8 @@ import ExpandLessTwoToneIcon from '@material-ui/icons/ExpandLessTwoTone';
 import ExpandMoreTwoToneIcon from '@material-ui/icons/ExpandMoreTwoTone';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useStyles, { StyledTableCell } from './styles';
+import useStyles from './styles';
+import { StyledTableCell } from '../../../components/StyledTableCell';
 
 interface SortData {
   lastRun: { sort: boolean; ascending: boolean };

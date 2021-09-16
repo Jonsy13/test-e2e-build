@@ -10,7 +10,8 @@ import {
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import React, { useEffect, useState } from 'react';
-import useStyles, { StyledTableCell } from './styles';
+import useStyles from './styles';
+import { StyledTableCell } from '../../../components/StyledTableCell';
 import useActions from '../../../redux/actions';
 import * as NodeSelectionActions from '../../../redux/actions/nodeSelection';
 import TableData from './TableData';

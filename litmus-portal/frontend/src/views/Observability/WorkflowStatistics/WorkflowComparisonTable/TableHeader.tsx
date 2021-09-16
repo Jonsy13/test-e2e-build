@@ -4,7 +4,8 @@ import ExpandMoreTwoToneIcon from '@material-ui/icons/ExpandMoreTwoTone';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CheckBox } from '../../../../components/CheckBox';
-import useStyles, { StyledTableCell } from './styles';
+import useStyles from './styles';
+import { StyledTableCell } from '../../../../components/StyledTableCell';
 
 interface SortData {
   startDate: { sort: boolean; ascending: boolean };
