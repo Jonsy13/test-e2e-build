@@ -12,8 +12,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Member } from '../../../../models/graphql/user';
 import InvitedTableData from './invitedTableData';
-import useStyles from './styles';
-import { StyledTableCell } from '../../../../components/StyledTableCell';
+import useStyles, { StyledTableCell } from './styles';
 
 interface PaginationData {
   pageNo: number;

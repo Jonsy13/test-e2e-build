@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { LitmusThemeProvider } from 'litmus-ui';
+import { LitmusThemeProvider } from 'litmus-ui/theme';
 import React, { lazy, useState } from 'react';
 import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import { SuspenseLoader } from '../../components/SuspenseLoader';
@@ -14,89 +14,36 @@ import { history } from '../../redux/configureStore';
 import { getToken, getUserId, getUserRole } from '../../utils/auth';
 import { getProjectID, getProjectRole } from '../../utils/getSearchParams';
 
-const Scaffold = lazy(
-  () => import(/* webpackChunkName: "Scaffold" */ '../layouts/Scaffold')
-);
-const ErrorPage = lazy(
-  () => import(/* webpackChunkName: "ErrorPage" */ '../../pages/ErrorPage')
-);
-const Workflows = lazy(
-  () => import(/* webpackChunkName: "Workflows" */ '../../pages/Workflows')
-);
-const CreateWorkflow = lazy(
-  () =>
-    import(
-      /* webpackChunkName: "CreateWorkflow" */ '../../pages/CreateWorkflow'
-    )
-);
-const LoginPage = lazy(
-  () => import(/* webpackChunkName: "LoginPage" */ '../../pages/LoginPage')
-);
-const GetStarted = lazy(
-  () =>
-    import(/* webpackChunkName: "GetStarted" */ '../../pages/GetStartedPage')
-);
-const WorkflowDetails = lazy(
-  () =>
-    import(
-      /* webpackChunkName: "WorkflowDetails" */ '../../pages/WorkflowDetails'
-    )
-);
-const HomePage = lazy(
-  () => import(/* webpackChunkName: "HomePage" */ '../../pages/HomePage')
-);
-const Community = lazy(
-  () => import(/* webpackChunkName: "Community" */ '../../pages/Community')
-);
-const Settings = lazy(
-  () => import(/* webpackChunkName: "Settings" */ '../../pages/Settings')
-);
-const UsageStatistics = lazy(
-  () =>
-    import(/* webpackChunkName: "UsageStats" */ '../../pages/UsageStatistics')
-);
-const Targets = lazy(
-  () => import(/* webpackChunkName: "Targets" */ '../../pages/Targets')
-);
-const EditSchedule = lazy(
-  () => import(/* webpackChunkName: "ES" */ '../../pages/EditSchedule')
-);
-const SetNewSchedule = lazy(
-  () =>
-    import(/* webpackChunkName: "SNS" */ '../../pages/EditSchedule/Schedule')
-);
-const ConnectTargets = lazy(
-  () => import(/* webpackChunkName: "CT" */ '../../pages/ConnectTarget')
-);
-const WorkflowInfoStats = lazy(
-  () => import(/* webpackChunkName: "WIS" */ '../../pages/WorkflowInfoStats')
-);
+const Scaffold = lazy(() => import('../layouts/Scaffold'));
+
+const ErrorPage = lazy(() => import('../../pages/ErrorPage'));
+const Workflows = lazy(() => import('../../pages/Workflows'));
+const CreateWorkflow = lazy(() => import('../../pages/CreateWorkflow'));
+const LoginPage = lazy(() => import('../../pages/LoginPage'));
+const GetStarted = lazy(() => import('../../pages/GetStartedPage'));
+const WorkflowDetails = lazy(() => import('../../pages/WorkflowDetails'));
+const HomePage = lazy(() => import('../../pages/HomePage'));
+const Community = lazy(() => import('../../pages/Community'));
+const Settings = lazy(() => import('../../pages/Settings'));
+const UsageStatistics = lazy(() => import('../../pages/UsageStatistics'));
+const Targets = lazy(() => import('../../pages/Targets'));
+const EditSchedule = lazy(() => import('../../pages/EditSchedule'));
+const SetNewSchedule = lazy(() => import('../../pages/EditSchedule/Schedule'));
+const ConnectTargets = lazy(() => import('../../pages/ConnectTarget'));
+const WorkflowInfoStats = lazy(() => import('../../pages/WorkflowInfoStats'));
 const ObservabilityDashboard = lazy(
-  () => import(/* webpackChunkName: "OD" */ '../../pages/ObservabilityPage')
+  () => import('../../pages/ObservabilityPage')
 );
 const DataSourceConfigurePage = lazy(
-  () =>
-    import(/* webpackChunkName: "DSCP" */ '../../pages/ConfigureDataSources')
+  () => import('../../pages/ConfigureDataSources')
 );
 const ChooseAndConfigureDashboards = lazy(
-  () =>
-    import(
-      /* webpackChunkName: "CACD" */ '../../pages/ChooseAndConfigureDashboards'
-    )
+  () => import('../../pages/ChooseAndConfigureDashboards')
 );
-const DashboardPage = lazy(
-  () => import(/* webpackChunkName: "DP" */ '../../pages/MonitoringDashboard')
-);
-const MyHub = lazy(
-  () => import(/* webpackChunkName: "MH" */ '../../pages/ChaosHub')
-);
-const ChaosChart = lazy(
-  () => import(/* webpackChunkName: "CC" */ '../../views/MyHub/MyHubCharts')
-);
-const MyHubExperiment = lazy(
-  () =>
-    import(/* webpackChunkName: "MHE" */ '../../views/MyHub/MyHubExperiment')
-);
+const DashboardPage = lazy(() => import('../../pages/MonitoringDashboard'));
+const MyHub = lazy(() => import('../../pages/ChaosHub'));
+const ChaosChart = lazy(() => import('../../views/MyHub/MyHubCharts'));
+const MyHubExperiment = lazy(() => import('../../views/MyHub/MyHubExperiment'));
 
 const Routes: React.FC = () => {
   const baseRoute = window.location.pathname
@@ -140,7 +87,7 @@ const Routes: React.FC = () => {
   });
 
   const { loading: projectValidation } = useQuery<ProjectDetail>(GET_PROJECT, {
-    skip: (projectID !== '' && projectID !== undefined) || getToken() === '',
+    skip: getToken() === '',
     variables: { projectID },
     onCompleted: (data) => {
       if (data?.getProject) {

@@ -11,8 +11,7 @@ import {
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Member } from '../../../../models/graphql/user';
-import useStyles from './styles';
-import { StyledTableCell } from '../../../../components/StyledTableCell';
+import useStyles, { StyledTableCell } from './styles';
 import TableData from './tableData';
 
 interface PaginationData {

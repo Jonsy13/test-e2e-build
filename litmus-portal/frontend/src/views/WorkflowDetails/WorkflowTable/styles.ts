@@ -1,4 +1,10 @@
-import { makeStyles } from '@material-ui/core/styles';
+import {
+  createStyles,
+  makeStyles,
+  TableCell,
+  Theme,
+  withStyles,
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -85,3 +91,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default useStyles;
+
+export const StyledTableCell = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      borderBottom: `1px solid ${theme.palette.border.main}`,
+    },
+  })
+)(TableCell);

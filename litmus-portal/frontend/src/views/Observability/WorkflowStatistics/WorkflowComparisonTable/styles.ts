@@ -1,4 +1,9 @@
-import { makeStyles } from '@material-ui/core/styles';
+import {
+  createStyles,
+  makeStyles,
+  TableCell,
+  withStyles,
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -342,5 +347,13 @@ export const useOutlinedInputStyles = makeStyles((theme) => ({
   focused: {},
   notchedOutline: {},
 }));
+
+export const StyledTableCell = withStyles((theme) =>
+  createStyles({
+    root: {
+      borderBottom: `1px solid ${theme.palette.border.main}`,
+    },
+  })
+)(TableCell);
 
 export default useStyles;

@@ -1,12 +1,13 @@
 import { Tooltip, Typography } from '@material-ui/core';
-import { ButtonFilled, InputField } from 'litmus-ui';
+import ButtonFilled from 'litmus-ui/core/Button/ButtonFilled';
+import InputField from 'litmus-ui/core/Input/InputField';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Loader from '../../components/Loader';
 import config from '../../config';
 import { setUserDetails } from '../../utils/auth';
 import { validateStartEmptySpacing } from '../../utils/validate';
-// import LoginWrapper from '../../views/Login';
+import LoginWrapper from '../../views/Login';
 import useStyles from './styles';
 
 interface authData {
@@ -62,76 +63,76 @@ const LoginPage: React.FC = () => {
       });
   };
   return (
-    // <LoginWrapper title={t('login.heading')} subtitle={t('login.subHeading1')}>
-    <form
-      id="login-form"
-      autoComplete="on"
-      onSubmit={handleSubmit}
-      className={classes.inputDiv}
-    >
-      <div>
-        <InputField
-          data-cy="inputName"
-          className={classes.inputValue}
-          label="Username"
-          value={authData.username}
-          helperText={
-            validateStartEmptySpacing(authData.username)
-              ? t(
-                  'settings.userManagementTab.createUser.userDetails.validationEmptySpace'
-                )
-              : ''
-          }
-          filled
-          onChange={(e) =>
-            setAuthData({
-              username: e.target.value,
-              password: authData.password,
-            })
-          }
-        />
-        <InputField
-          data-cy="inputPassword"
-          className={classes.inputValue}
-          label="Password"
-          type="password"
-          required
-          value={authData.password}
-          helperText={isError ? errorMsg : ''}
-          filled
-          onChange={(e) =>
-            setAuthData({
-              username: authData.username,
-              password: e.target.value,
-            })
-          }
-        />
-      </div>
-      <div className={classes.buttonGroup}>
-        <Tooltip
-          classes={{
-            tooltip: classes.tooltip,
-          }}
-          disableFocusListener
-          placement="bottom"
-          title={<Typography>{t('login.tooltipText')}</Typography>}
-        >
-          <Typography className={classes.forgetPwdText}>
-            {t('login.forgotPassword')}
-          </Typography>
-        </Tooltip>
-        <ButtonFilled
-          className={classes.loginButton}
-          type="submit"
-          disabled={isLoading}
-        >
-          <div data-cy="loginButton">
-            {isLoading ? <Loader size={loaderSize} /> : 'Login'}
-          </div>
-        </ButtonFilled>
-      </div>
-    </form>
-    // </LoginWrapper>
+    <LoginWrapper title={t('login.heading')} subtitle={t('login.subHeading1')}>
+      <form
+        id="login-form"
+        autoComplete="on"
+        onSubmit={handleSubmit}
+        className={classes.inputDiv}
+      >
+        <div>
+          <InputField
+            data-cy="inputName"
+            className={classes.inputValue}
+            label="Username"
+            value={authData.username}
+            helperText={
+              validateStartEmptySpacing(authData.username)
+                ? t(
+                    'settings.userManagementTab.createUser.userDetails.validationEmptySpace'
+                  )
+                : ''
+            }
+            filled
+            onChange={(e) =>
+              setAuthData({
+                username: e.target.value,
+                password: authData.password,
+              })
+            }
+          />
+          <InputField
+            data-cy="inputPassword"
+            className={classes.inputValue}
+            label="Password"
+            type="password"
+            required
+            value={authData.password}
+            helperText={isError ? errorMsg : ''}
+            filled
+            onChange={(e) =>
+              setAuthData({
+                username: authData.username,
+                password: e.target.value,
+              })
+            }
+          />
+        </div>
+        <div className={classes.buttonGroup}>
+          <Tooltip
+            classes={{
+              tooltip: classes.tooltip,
+            }}
+            disableFocusListener
+            placement="bottom"
+            title={<Typography>{t('login.tooltipText')}</Typography>}
+          >
+            <Typography className={classes.forgetPwdText}>
+              {t('login.forgotPassword')}
+            </Typography>
+          </Tooltip>
+          <ButtonFilled
+            className={classes.loginButton}
+            type="submit"
+            disabled={isLoading}
+          >
+            <div data-cy="loginButton">
+              {isLoading ? <Loader size={loaderSize} /> : 'Login'}
+            </div>
+          </ButtonFilled>
+        </div>
+      </form>
+    </LoginWrapper>
   );
 };
 

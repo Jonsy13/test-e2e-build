@@ -1,4 +1,5 @@
 import {
+  createStyles,
   FormControl,
   InputAdornment,
   InputLabel,
@@ -13,8 +14,10 @@ import {
   TablePagination,
   TableRow,
   TextField,
+  Theme,
   Toolbar,
   Typography,
+  withStyles,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { ButtonFilled } from 'litmus-ui';
@@ -27,7 +30,19 @@ import CreateUser from '../CreateUser';
 import EditUser from '../EditUser';
 import useStyles from './styles';
 import TableData from './tableData';
-import { StyledTableCell } from '../../../../components/StyledTableCell';
+
+// StyledTableCell used to create custom table cell
+const StyledTableCell = withStyles((theme: Theme) =>
+  createStyles({
+    head: {
+      backgroundColor: theme.palette.cards.background,
+      color: theme.palette.text.primary,
+    },
+    body: {
+      fontSize: '0.875rem',
+    },
+  })
+)(TableCell);
 
 interface FilterOptions {
   search: string;

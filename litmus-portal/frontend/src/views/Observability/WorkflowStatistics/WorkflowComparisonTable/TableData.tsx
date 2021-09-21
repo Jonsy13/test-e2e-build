@@ -11,8 +11,7 @@ import {
   getProjectID,
   getProjectRole,
 } from '../../../../utils/getSearchParams';
-import useStyles from './styles';
-import { StyledTableCell } from '../../../../components/StyledTableCell';
+import useStyles, { StyledTableCell } from './styles';
 
 interface TableDataProps {
   data: ScheduledWorkflow;

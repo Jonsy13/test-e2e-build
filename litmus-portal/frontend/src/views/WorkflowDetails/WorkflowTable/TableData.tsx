@@ -7,8 +7,7 @@ import YAML from 'yaml';
 import { ExecutionData } from '../../../models/graphql/workflowData';
 import timeDifference from '../../../utils/datesModifier';
 import WorkflowStatus from '../WorkflowStatus';
-import useStyles from './styles';
-import { StyledTableCell } from '../../../components/StyledTableCell';
+import useStyles, { StyledTableCell } from './styles';
 
 interface TableDataProps {
   onViewLogsClick: () => void;
