@@ -2,7 +2,7 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import IconButton from '@material-ui/core/IconButton';
 import { useTheme } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
-import { Icon } from 'litmus-ui';
+import { Icon } from 'litmus-ui/core/Icon';
 import React from 'react';
 
 interface InfoTooltipProps {

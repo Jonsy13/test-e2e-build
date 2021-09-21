@@ -6,7 +6,7 @@ import {
   Typography,
   useTheme,
 } from '@material-ui/core';
-import { ButtonFilled, Icon, TextButton } from 'litmus-ui';
+import { ButtonFilled, Icon, TextButton } from 'litmus-ui/core';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';

@@ -9,7 +9,7 @@ import {
   useTheme,
 } from '@material-ui/core';
 import DoneIcon from '@material-ui/icons/Done';
-import { Icon } from 'litmus-ui';
+import { Icon } from 'litmus-ui/core/Icon';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LIST_PROJECTS } from '../../graphql';

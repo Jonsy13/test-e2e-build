@@ -1,5 +1,5 @@
 import { Avatar, Badge, Typography } from '@material-ui/core';
-import { ButtonFilled } from 'litmus-ui';
+import ButtonFilled from 'litmus-ui/core/Button/ButtonFilled';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useStyles from './styles';
