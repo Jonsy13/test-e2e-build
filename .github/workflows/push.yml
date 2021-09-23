@@ -46,10 +46,15 @@ jobs:
     # Images with 2 tags will be created -
     # 1. TAG: <branch-ci> e.g. master-ci, will be used for testing
     # 2. SHA_TAG: <branch>-<github-sha>-<timestamp>, for gitops automation
+
+    # We will have 2 CAPTCHA_SITE_KEY variables depending on branch
+    # 1. REACT_APP_MASTER_CAPTCHA_SITE_KEY
+    # 2. REACT_APP_STAGING_CAPTCHA_SITE_KEY
     outputs:
       TAG: ${{ steps.envs.outputs.TAG }}
       SHA_TAG: ${{ steps.envs.outputs.SHA_TAG }}
       TIME_STAMP: ${{ steps.envs.outputs.TIME_STAMP }}
+      CAPTCHA_SITE_KEY_SECRET_NAME: ${{ steps.envs.outputs.CAPTCHA_SITE_KEY_SECRET_NAME }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -57,11 +62,13 @@ jobs:
       - id: envs
         run: |
           branch=${GITHUB_REF##*/}
+          BRANCH=${branch^^}
           sha=${GITHUB_SHA::8}
           ts=$(date +%s)
           echo "::set-output name=SHA_TAG::${branch}-${sha}-${ts}"  
           echo "::set-output name=TAG::${branch}-ci"
-          echo "::set-output name=TIME_STAMP::${ts}"
+          echo "::set-output name=TIME_STAMP::${ts}"# Based on Branch 
+          echo "::set-output name="CAPTCHA_SITE_KEY_SECRET_NAME::REACT_APP_${BRANCH}_CAPTCHA_SITE_KEY"
 
   docker-build-and-push-graphql-server:
     runs-on: ubuntu-latest
@@ -313,6 +320,7 @@ jobs:
           TAG: ${{ needs.get-envs.outputs.TAG }}
           SHA_TAG: ${{ needs.get-envs.outputs.SHA_TAG }}
           TIME_STAMP: ${{ needs.get-envs.outputs.TIME_STAMP }}
+          CAPTCHA_SITE_KEY_SECRET_NAME: ${{ needs.get-envs.outputs.CAPTCHA_SITE_KEY_SECRET_NAME}}
         with:
           push: true
           file: ./litmus-portal/frontend/Dockerfile
@@ -322,6 +330,7 @@ jobs:
             REACT_APP_KB_CHAOS_VERSION=${{ env.TAG }}
             REACT_APP_BUILD_TIME=${{ env.TIME_STAMP }}
             PUBLIC_URL=${{ matrix.frontend.path }}
+            REACT_APP_CAPTCHA_SITE_KEY=${{ secrets[env.CAPTCHA_SITE_KEY_SECRET_NAME] }}
           tags: |
             ${{ secrets.REPONAME }}/${{ matrix.frontend.image_name }}:${{ env.TAG }},
             ${{ secrets.REPONAME }}/${{ matrix.frontend.image_name }}:${{ env.SHA_TAG }}
