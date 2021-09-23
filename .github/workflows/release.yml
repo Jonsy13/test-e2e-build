@@ -272,6 +272,6 @@ jobs:
             REACT_APP_KB_CHAOS_VERSION=${{ env.RELEASE_TAG }}
             REACT_APP_BUILD_TIME=${{ env.TIME_STAMP }}
             PUBLIC_URL=${{ matrix.frontend.path }}
-            REACT_APP_CAPTCHA_SITE_KEY=${{ secrets.CAPTCHA_SITE_KEY_SECRET_NAME }}
+            REACT_APP_CAPTCHA_SITE_KEY=${{ secrets.REACT_APP_MASTER_CAPTCHA_SITE_KEY }}
           tags: |
             ${{ secrets.REPONAME }}/${{ matrix.frontend.image_name }}:${{ env.RELEASE_TAG }}
