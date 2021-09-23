@@ -68,7 +68,7 @@ jobs:
           echo "::set-output name=SHA_TAG::${branch}-${sha}-${ts}"  
           echo "::set-output name=TAG::${branch}-ci"
           echo "::set-output name=TIME_STAMP::${ts}"# Based on Branch 
-          echo "::set-output name="CAPTCHA_SITE_KEY_SECRET_NAME::REACT_APP_${BRANCH}_CAPTCHA_SITE_KEY"
+          echo "::set-output name=CAPTCHA_SITE_KEY_SECRET_NAME::REACT_APP_${BRANCH}_CAPTCHA_SITE_KEY"
 
   docker-build-and-push-graphql-server:
     runs-on: ubuntu-latest
