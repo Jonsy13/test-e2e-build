@@ -20,6 +20,13 @@ env:
 jobs:
   get-envs:
     runs-on: ubuntu-latest
+    # Images with 2 tags will be created -
+    # 1. TAG: <branch-ci> e.g. master-ci, will be used for testing
+    # 2. SHA_TAG: <branch>-<github-sha>-<timestamp>, for gitops automation
+
+    # We will have 2 CAPTCHA_SITE_KEY variables depending on branch
+    # 1. REACT_APP_MASTER_CAPTCHA_SITE_KEY
+    # 2. REACT_APP_STAGING_CAPTCHA_SITE_KEY
     outputs:
       RELEASE_TAG: ${{ steps.envs.outputs.RELEASE_TAG }}
       TIME_STAMP: ${{ steps.envs.outputs.TIME_STAMP }}
@@ -29,6 +36,7 @@ jobs:
       - id: envs
         run: |
           TAG="${GITHUB_REF#refs/*/}"
+          ts=$(date +%s)
           echo "::set-output name=RELEASE_TAG::$TAG"
           echo "::set-output name=TIME_STAMP::${ts}"
 
@@ -259,10 +267,11 @@ jobs:
           push: true
           file: ./litmus-portal/frontend/Dockerfile
           context: ./litmus-portal/frontend
-          platforms: ${{ secrets.PLATFORMS }}
+          platforms: linux/amd64
           build-args: |
             REACT_APP_KB_CHAOS_VERSION=${{ env.RELEASE_TAG }}
             REACT_APP_BUILD_TIME=${{ env.TIME_STAMP }}
             PUBLIC_URL=${{ matrix.frontend.path }}
+            REACT_APP_CAPTCHA_SITE_KEY=${{ secrets.CAPTCHA_SITE_KEY_SECRET_NAME }}
           tags: |
             ${{ secrets.REPONAME }}/${{ matrix.frontend.image_name }}:${{ env.RELEASE_TAG }}
