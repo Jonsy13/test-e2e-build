@@ -6,6 +6,7 @@ import config from './config';
 import App from './containers/app/App';
 import configureStore from './redux/configureStore';
 import createApolloClient from './utils/createApolloClient';
+import Loader from './components/Loader';
 
 const { persistor, store } = configureStore();
 
@@ -18,7 +19,7 @@ const ReduxRoot = () => {
   return (
     <ApolloProvider client={client}>
       <Provider store={store}>
-        <PersistGate persistor={persistor}>
+        <PersistGate loading={<Loader />} persistor={persistor}>
           <App />
         </PersistGate>
       </Provider>
