@@ -16,7 +16,7 @@ defaults:
 env:
   GRAPHQL_SERVER_IMAGE: "clc-server"
   AUTHENTICATION_SERVER_IMAGE: "clc-auth-server"
-  FRONTEND_IMAGE: "litmusportal-frontend" #Not getting used
+  FRONTEND_IMAGE: "clc-frontend" #Not getting used
   SUBSCRIBER_IMAGE: "clc-subscriber"
   EVENT_TRACKER: "clc-event-tracker"
   UPGRADE_AGENT_CP: "clc-upgrade-agent-cp"
