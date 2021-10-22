@@ -368,10 +368,10 @@ jobs:
           run: |
             tag=${{needs.get-envs.outputs.SHA_TAG}}
             sed -i -e "s|jonsy13/${{ env.FRONTEND_IMAGE }}:.*|jonsy13/${{ env.FRONTEND_IMAGE }}:$tag|g" cluster-k8s-manifest.yml
-            sed -i -e "s|jonsy13/${{ env.GRAHQL_SERVER_IMAGE }}:.*|jonsy13/${{ env.GRAHQL_SERVER_IMAGE }}:$tag|g" cluster-k8s-manifest.yml
-            sed -i -e "s|jonsy13/${{ env.AUTH_SERVER_IMAGE }}:.*|jonsy13/${{ env.AUTH_SERVER_IMAGE }}:$tag|g" cluster-k8s-manifest.yml
+            sed -i -e "s|jonsy13/${{ env.GRAPHQL_SERVER_IMAGE }}:.*|jonsy13/${{ env.GRAPHQL_SERVER_IMAGE }}:$tag|g" cluster-k8s-manifest.yml
+            sed -i -e "s|jonsy13/${{ env.AUTHENTICATION_SERVER_IMAGE }}:.*|jonsy13/${{ env.AUTHENTICATION_SERVER_IMAGE }}:$tag|g" cluster-k8s-manifest.yml
             sed -i -e "s|jonsy13/${{ env.SUBSCRIBER_IMAGE }}:.*|jonsy13/${{ env.SUBSCRIBER_IMAGE }}:$tag|g" cluster-k8s-manifest.yml
-            sed -i -e "s|jonsy13/${{ env.EVEN_TRACKER_IMAGE }}:.*|jonsy13/${{ env.SUBSCRIBER_IMAGE }}:$tag|g" cluster-k8s-manifest.yml
+            sed -i -e "s|jonsy13/${{ env.EVENT_TRACKER_IMAGE }}:.*|jonsy13/${{ env.EVENT_TRACKER_IMAGE }}:$tag|g" cluster-k8s-manifest.yml
 
         - uses: peter-evans/create-pull-request@v3
           with:
