@@ -66,8 +66,7 @@ jobs:
       - id: envs
         run: |
           branch=${GITHUB_REF##*/}
-          ls
-          version=`jq '.version' version.json` | tr -d '"'
+          version=`jq -r '.version' version.json`
           BRANCH=${branch^^}
           sha=${GITHUB_SHA::8}
           ts=$(date +%s)
