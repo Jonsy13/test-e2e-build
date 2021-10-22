@@ -14,12 +14,12 @@ defaults:
 
 # All Image names are provided here as envs. (Will be available in all jobs)
 env:
-  GRAPHQL_SERVER_IMAGE: "litmusportal-server"
-  AUTHENTICATION_SERVER_IMAGE: "litmusportal-auth-server"
+  GRAPHQL_SERVER_IMAGE: "clc-server"
+  AUTHENTICATION_SERVER_IMAGE: "clc-auth-server"
   FRONTEND_IMAGE: "litmusportal-frontend" #Not getting used
-  SUBSCRIBER_IMAGE: "litmusportal-subscriber"
-  EVENT_TRACKER: "litmusportal-event-tracker"
-  UPGRADE_AGENT_CP: "litmusportal-upgrade-agent-cp"
+  SUBSCRIBER_IMAGE: "clc-subscriber"
+  EVENT_TRACKER: "clc-event-tracker"
+  UPGRADE_AGENT_CP: "clc-upgrade-agent-cp"
 
 jobs:
   backend-checks:
@@ -55,6 +55,10 @@ jobs:
       SHA_TAG: ${{ steps.envs.outputs.SHA_TAG }}
       TIME_STAMP: ${{ steps.envs.outputs.TIME_STAMP }}
       CAPTCHA_SITE_KEY_SECRET_NAME: ${{ steps.envs.outputs.CAPTCHA_SITE_KEY_SECRET_NAME }}
+      REACT_APP_CDN_URL: ${{ steps.envs.outputs.REACT_APP_CDN_URL }}
+      REACT_APP_INTERCOM_APP_ID: ${{ steps.envs.outputs.REACT_APP_INTERCOM_APP_ID }}
+      REACT_APP_INTERCOM_HASH_KEY: ${{ steps.envs.outputs.REACT_APP_INTERCOM_HASH_KEY }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -62,275 +66,305 @@ jobs:
       - id: envs
         run: |
           branch=${GITHUB_REF##*/}
+          version=`jq '.version' ./litmus-portal/version.json`
           BRANCH=${branch^^}
           sha=${GITHUB_SHA::8}
           ts=$(date +%s)
-          echo "::set-output name=SHA_TAG::${branch}-${sha}-${ts}"  
+          echo "::set-output name=SHA_TAG::${version}-${branch}-${sha}"  
           echo "::set-output name=TAG::${branch}-ci"
           echo "::set-output name=TIME_STAMP::${ts}"
           echo "::set-output name=CAPTCHA_SITE_KEY_SECRET_NAME::REACT_APP_${BRANCH}_CAPTCHA_SITE_KEY"
+          echo "::set-output name=REACT_APP_CDN_URL::REACT_APP_${BRANCH}_CDN_URL"
+          echo "::set-output name=REACT_APP_INTERCOM_APP_ID::REACT_APP_${BRANCH}_INTERCOM_APP_ID"
+          echo "::set-output name=REACT_APP_INTERCOM_HASH_KEY::REACT_APP_${BRANCH}_INTERCOM_HASH_KEY"
 
-  docker-build-and-push-graphql-server:
-    runs-on: ubuntu-latest
-    needs:
-      - get-envs
-      - backend-checks
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  # docker-build-and-push-graphql-server:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - get-envs
+  #     - backend-checks
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
+  #     - name: Set up Docker Buildx
+  #       id: buildx
+  #       uses: docker/setup-buildx-action@v1
+  #       with:
+  #         version: latest
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-        with:
-          platforms: all
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v1
+  #       with:
+  #         platforms: all
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #     - name: Login to DockerHub
+  #       uses: docker/login-action@v1
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Context & file paths are provided from root, default working-directory can't work with actions.
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        env:
-          TAG: ${{ needs.get-envs.outputs.TAG }}
-          SHA_TAG: ${{ needs.get-envs.outputs.SHA_TAG }}
-        with:
-          push: true
-          file: ./litmus-portal/graphql-server/Dockerfile
-          context: ./litmus-portal/graphql-server
-          platforms: ${{ secrets.PLATFORMS }}
-          tags: |
-            ${{ secrets.REPONAME }}/${{ env.GRAPHQL_SERVER_IMAGE }}:${{ env.TAG }},
-            ${{ secrets.REPONAME }}/${{ env.GRAPHQL_SERVER_IMAGE }}:${{ env.SHA_TAG }}
+  #     # Context & file paths are provided from root, default working-directory can't work with actions.
+  #     - name: Build and push
+  #       uses: docker/build-push-action@v2
+  #       env:
+  #         TAG: ${{ needs.get-envs.outputs.TAG }}
+  #         SHA_TAG: ${{ needs.get-envs.outputs.SHA_TAG }}
+  #       with:
+  #         push: true
+  #         file: ./litmus-portal/graphql-server/Dockerfile
+  #         context: ./litmus-portal/graphql-server
+  #         platforms: ${{ secrets.PLATFORMS }}
+  #         tags: |
+  #           ${{ secrets.REPONAME }}/${{ env.GRAPHQL_SERVER_IMAGE }}:${{ env.TAG }},
+  #           ${{ secrets.REPONAME }}/${{ env.GRAPHQL_SERVER_IMAGE }}:${{ env.SHA_TAG }}
 
-  docker-build-and-push-authentication-server:
-    runs-on: ubuntu-latest
-    needs:
-      - get-envs
-      - backend-checks
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  # docker-build-and-push-authentication-server:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - get-envs
+  #     - backend-checks
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
+  #     - name: Set up Docker Buildx
+  #       id: buildx
+  #       uses: docker/setup-buildx-action@v1
+  #       with:
+  #         version: latest
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-        with:
-          platforms: all
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v1
+  #       with:
+  #         platforms: all
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #     - name: Login to DockerHub
+  #       uses: docker/login-action@v1
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Context & file paths are provided from root, default working-directory can't work with actions.
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        env:
-          TAG: ${{ needs.get-envs.outputs.TAG }}
-          SHA_TAG: ${{ needs.get-envs.outputs.SHA_TAG }}
-        with:
-          push: true
-          file: ./litmus-portal/authentication/Dockerfile
-          context: ./litmus-portal/authentication
-          platforms: ${{ secrets.PLATFORMS }}
-          tags: |
-            ${{ secrets.REPONAME }}/${{ env.AUTHENTICATION_SERVER_IMAGE }}:${{ env.TAG }},
-            ${{ secrets.REPONAME }}/${{ env.AUTHENTICATION_SERVER_IMAGE }}:${{ env.SHA_TAG }}
+  #     # Context & file paths are provided from root, default working-directory can't work with actions.
+  #     - name: Build and push
+  #       uses: docker/build-push-action@v2
+  #       env:
+  #         TAG: ${{ needs.get-envs.outputs.TAG }}
+  #         SHA_TAG: ${{ needs.get-envs.outputs.SHA_TAG }}
+  #       with:
+  #         push: true
+  #         file: ./litmus-portal/authentication/Dockerfile
+  #         context: ./litmus-portal/authentication
+  #         platforms: ${{ secrets.PLATFORMS }}
+  #         tags: |
+  #           ${{ secrets.REPONAME }}/${{ env.AUTHENTICATION_SERVER_IMAGE }}:${{ env.TAG }},
+  #           ${{ secrets.REPONAME }}/${{ env.AUTHENTICATION_SERVER_IMAGE }}:${{ env.SHA_TAG }}
 
-  docker-build-and-push-subscriber:
-    runs-on: ubuntu-latest
-    needs:
-      - get-envs
-      - backend-checks
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  # docker-build-and-push-subscriber:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - get-envs
+  #     - backend-checks
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
+  #     - name: Set up Docker Buildx
+  #       id: buildx
+  #       uses: docker/setup-buildx-action@v1
+  #       with:
+  #         version: latest
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-        with:
-          platforms: all
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v1
+  #       with:
+  #         platforms: all
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #     - name: Login to DockerHub
+  #       uses: docker/login-action@v1
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Context & file paths are provided from root, default working-directory can't work with actions.
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        env:
-          TAG: ${{ needs.get-envs.outputs.TAG }}
-          SHA_TAG: ${{ needs.get-envs.outputs.SHA_TAG }}
-        with:
-          push: true
-          file: ./litmus-portal/cluster-agents/subscriber/Dockerfile
-          context: ./litmus-portal/cluster-agents/subscriber
-          platforms: ${{ secrets.PLATFORMS }}
-          tags: |
-            ${{ secrets.REPONAME }}/${{ env.SUBSCRIBER_IMAGE }}:${{ env.TAG }},
-            ${{ secrets.REPONAME }}/${{ env.SUBSCRIBER_IMAGE }}:${{ env.SHA_TAG }}
+  #     # Context & file paths are provided from root, default working-directory can't work with actions.
+  #     - name: Build and push
+  #       uses: docker/build-push-action@v2
+  #       env:
+  #         TAG: ${{ needs.get-envs.outputs.TAG }}
+  #         SHA_TAG: ${{ needs.get-envs.outputs.SHA_TAG }}
+  #       with:
+  #         push: true
+  #         file: ./litmus-portal/cluster-agents/subscriber/Dockerfile
+  #         context: ./litmus-portal/cluster-agents/subscriber
+  #         platforms: ${{ secrets.PLATFORMS }}
+  #         tags: |
+  #           ${{ secrets.REPONAME }}/${{ env.SUBSCRIBER_IMAGE }}:${{ env.TAG }},
+  #           ${{ secrets.REPONAME }}/${{ env.SUBSCRIBER_IMAGE }}:${{ env.SHA_TAG }}
 
-  docker-build-and-push-event-tracker:
-    runs-on: ubuntu-latest
-    needs:
-      - get-envs
-      - backend-checks
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  # docker-build-and-push-event-tracker:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - get-envs
+  #     - backend-checks
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
+  #     - name: Set up Docker Buildx
+  #       id: buildx
+  #       uses: docker/setup-buildx-action@v1
+  #       with:
+  #         version: latest
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-        with:
-          platforms: all
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v1
+  #       with:
+  #         platforms: all
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #     - name: Login to DockerHub
+  #       uses: docker/login-action@v1
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Context & file paths are provided from root, default working-directory can't work with actions.
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        env:
-          TAG: ${{ needs.get-envs.outputs.TAG }}
-          SHA_TAG: ${{ needs.get-envs.outputs.SHA_TAG }}
-        with:
-          push: true
-          file: ./litmus-portal/cluster-agents/event-tracker/Dockerfile
-          context: ./litmus-portal/cluster-agents/event-tracker
-          platforms: ${{ secrets.PLATFORMS }}
-          tags: |
-            ${{ secrets.REPONAME }}/${{ env.EVENT_TRACKER }}:${{ env.TAG }},
-            ${{ secrets.REPONAME }}/${{ env.EVENT_TRACKER }}:${{ env.SHA_TAG }}
+  #     # Context & file paths are provided from root, default working-directory can't work with actions.
+  #     - name: Build and push
+  #       uses: docker/build-push-action@v2
+  #       env:
+  #         TAG: ${{ needs.get-envs.outputs.TAG }}
+  #         SHA_TAG: ${{ needs.get-envs.outputs.SHA_TAG }}
+  #       with:
+  #         push: true
+  #         file: ./litmus-portal/cluster-agents/event-tracker/Dockerfile
+  #         context: ./litmus-portal/cluster-agents/event-tracker
+  #         platforms: ${{ secrets.PLATFORMS }}
+  #         tags: |
+  #           ${{ secrets.REPONAME }}/${{ env.EVENT_TRACKER }}:${{ env.TAG }},
+  #           ${{ secrets.REPONAME }}/${{ env.EVENT_TRACKER }}:${{ env.SHA_TAG }}
 
-  docker-build-and-push-upgrade-agent-cp:
-    runs-on: ubuntu-latest
-    needs:
-      - get-envs
-      - backend-checks
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  # docker-build-and-push-upgrade-agent-cp:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - get-envs
+  #     - backend-checks
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
+  #     - name: Set up Docker Buildx
+  #       id: buildx
+  #       uses: docker/setup-buildx-action@v1
+  #       with:
+  #         version: latest
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-        with:
-          platforms: all
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v1
+  #       with:
+  #         platforms: all
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #     - name: Login to DockerHub
+  #       uses: docker/login-action@v1
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Context & file paths are provided from root, default working-directory can't work with actions.
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        env:
-          TAG: ${{ needs.get-envs.outputs.TAG }}
-          SHA_TAG: ${{ needs.get-envs.outputs.SHA_TAG }}
-        with:
-          push: true
-          file: ./litmus-portal/upgrade-agents/control-plane/Dockerfile
-          context: ./litmus-portal/upgrade-agents/control-plane
-          platforms: ${{ secrets.PLATFORMS }}
-          tags: |
-            ${{ secrets.REPONAME }}/${{ env.UPGRADE_AGENT_CP }}:${{ env.TAG }},
-            ${{ secrets.REPONAME }}/${{ env.UPGRADE_AGENT_CP }}:${{ env.SHA_TAG }}
+  #     # Context & file paths are provided from root, default working-directory can't work with actions.
+  #     - name: Build and push
+  #       uses: docker/build-push-action@v2
+  #       env:
+  #         TAG: ${{ needs.get-envs.outputs.TAG }}
+  #         SHA_TAG: ${{ needs.get-envs.outputs.SHA_TAG }}
+  #       with:
+  #         push: true
+  #         file: ./litmus-portal/upgrade-agents/control-plane/Dockerfile
+  #         context: ./litmus-portal/upgrade-agents/control-plane
+  #         platforms: ${{ secrets.PLATFORMS }}
+  #         tags: |
+  #           ${{ secrets.REPONAME }}/${{ env.UPGRADE_AGENT_CP }}:${{ env.TAG }},
+  #           ${{ secrets.REPONAME }}/${{ env.UPGRADE_AGENT_CP }}:${{ env.SHA_TAG }}
 
-  ## TODO: the build time for multiarch frontend image is higher so it is used in the release
-  ## builds only need to optimize the build duration and also add it with ci tag
-  ## Build and push / base path
-  docker-build-and-push-frontend:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        frontend:
-          [
-            { "image_name": "litmusportal-frontend", "path": "" },
-            {
-              "image_name": "litmusportal-frontend-path-litmuschaos",
-              "path": "/litmuschaos",
-            },
-          ]
-    needs:
-      - get-envs
-      - frontend-checks
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  # ## TODO: the build time for multiarch frontend image is higher so it is used in the release
+  # ## builds only need to optimize the build duration and also add it with ci tag
+  # ## Build and push / base path
+  # docker-build-and-push-frontend:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       frontend:
+  #         [
+  #           { "image_name": "clc-frontend", "path": "" },
+  #           {
+  #             "image_name": "clc-frontend-path-litmuschaos",
+  #             "path": "/litmuschaos",
+  #           },
+  #         ]
+  #   needs:
+  #     - get-envs
+  #     - frontend-checks
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
+  #     - name: Set up Docker Buildx
+  #       id: buildx
+  #       uses: docker/setup-buildx-action@v1
+  #       with:
+  #         version: latest
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-        with:
-          platforms: all
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v1
+  #       with:
+  #         platforms: all
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #     - name: Login to DockerHub
+  #       uses: docker/login-action@v1
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        env:
-          TAG: ${{ needs.get-envs.outputs.TAG }}
-          SHA_TAG: ${{ needs.get-envs.outputs.SHA_TAG }}
-          TIME_STAMP: ${{ needs.get-envs.outputs.TIME_STAMP }}
-          CAPTCHA_SITE_KEY_SECRET_NAME: ${{ needs.get-envs.outputs.CAPTCHA_SITE_KEY_SECRET_NAME}}
-        with:
-          push: true
-          file: ./litmus-portal/frontend/Dockerfile
-          context: ./litmus-portal/frontend
-          platforms: linux/amd64
-          build-args: |
-            REACT_APP_KB_CHAOS_VERSION=${{ env.TAG }}
-            REACT_APP_BUILD_TIME=${{ env.TIME_STAMP }}
-            PUBLIC_URL=${{ matrix.frontend.path }}
-            REACT_APP_CAPTCHA_SITE_KEY=${{ secrets[env.CAPTCHA_SITE_KEY_SECRET_NAME] }}
-          tags: |
-            ${{ secrets.REPONAME }}/${{ matrix.frontend.image_name }}:${{ env.TAG }},
-            ${{ secrets.REPONAME }}/${{ matrix.frontend.image_name }}:${{ env.SHA_TAG }}
+  #     - name: Build and push
+  #       uses: docker/build-push-action@v2
+  #       env:
+  #         TAG: ${{ needs.get-envs.outputs.TAG }}
+  #         SHA_TAG: ${{ needs.get-envs.outputs.SHA_TAG }}
+  #         TIME_STAMP: ${{ needs.get-envs.outputs.TIME_STAMP }}
+  #         CAPTCHA_SITE_KEY_SECRET_NAME: ${{ needs.get-envs.outputs.CAPTCHA_SITE_KEY_SECRET_NAME}}
+  #         REACT_APP_CDN_URL: ${{ needs.get-envs.outputs.REACT_APP_CDN_URL}}
+  #         REACT_APP_INTERCOM_APP_ID: ${{ needs.get-envs.outputs.REACT_APP_INTERCOM_APP_ID}}
+  #         REACT_APP_INTERCOM_HASH_KEY: ${{ needs.get-envs.outputs.REACT_APP_INTERCOM_HASH_KEY}}
+
+  #       with:
+  #         push: true
+  #         file: ./litmus-portal/frontend/Dockerfile
+  #         context: ./litmus-portal/frontend
+  #         platforms: linux/amd64
+  #         build-args: |
+  #           REACT_APP_KB_CHAOS_VERSION=${{ env.SHA_TAG }}
+  #           REACT_APP_BUILD_TIME=${{ env.TIME_STAMP }}
+  #           PUBLIC_URL=${{ matrix.frontend.path }}
+  #           REACT_APP_CAPTCHA_SITE_KEY=${{ secrets[env.CAPTCHA_SITE_KEY_SECRET_NAME] }}
+  #           REACT_APP_CDN_URL=${{ secrets[env.REACT_APP_CDN_URL] }}
+  #           REACT_APP_INTERCOM_APP_ID=${{ secrets[env.REACT_APP_INTERCOM_APP_ID] }}
+  #           REACT_APP_INTERCOM_HASH_KEY=${{ secrets[env.REACT_APP_INTERCOM_HASH_KEY] }}
+
+  #         tags: |
+  #           ${{ secrets.REPONAME }}/${{ matrix.frontend.image_name }}:${{ env.TAG }},
+  #           ${{ secrets.REPONAME }}/${{ matrix.frontend.image_name }}:${{ env.SHA_TAG }}
+  DEPLOY:
+      runs-on: ubuntu-latest
+      needs: get-envs
+      steps:
+        - name: Checking out Manifest repository
+          uses: actions/checkout@v2
+          with:
+            ref: "main"
+            repository: "Jonsy13/flux-config"
+            token: ${{ secrets.MANIFESTS_TOKEN }}
+        - name: Updating the manifests and pushing
+          run: |
+            tag=${{needs.get-envs.outputs.SHA_TAG}}
+            sed -i -e "s|jonsy13/${{ env.FRONTEND_IMAGE }}:.*|jonsy13/${{ env.FRONTEND_IMAGE }}:$tag|g" apps/cluster-scope/cluster-k8s-manifest.yml
+            
+        - uses: peter-evans/create-pull-request@v3
+          with:
+            token: ${{ secrets.MANIFESTS_TOKEN }}
