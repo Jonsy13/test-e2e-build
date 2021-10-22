@@ -371,7 +371,7 @@ jobs:
             sed -i -e "s|jonsy13/${{ env.GRAPHQL_SERVER_IMAGE }}:.*|jonsy13/${{ env.GRAPHQL_SERVER_IMAGE }}:$tag|g" cluster-k8s-manifest.yml
             sed -i -e "s|jonsy13/${{ env.AUTHENTICATION_SERVER_IMAGE }}:.*|jonsy13/${{ env.AUTHENTICATION_SERVER_IMAGE }}:$tag|g" cluster-k8s-manifest.yml
             sed -i -e "s|jonsy13/${{ env.SUBSCRIBER_IMAGE }}:.*|jonsy13/${{ env.SUBSCRIBER_IMAGE }}:$tag|g" cluster-k8s-manifest.yml
-            sed -i -e "s|jonsy13/${{ env.EVENT_TRACKER_IMAGE }}:.*|jonsy13/${{ env.EVENT_TRACKER_IMAGE }}:$tag|g" cluster-k8s-manifest.yml
+            sed -i -e "s|jonsy13/${{ env.EVENT_TRACKER }}:.*|jonsy13/${{ env.EVENT_TRACKER }}:$tag|g" cluster-k8s-manifest.yml
 
         - uses: peter-evans/create-pull-request@v3
           with:
