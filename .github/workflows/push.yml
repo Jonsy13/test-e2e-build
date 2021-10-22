@@ -67,7 +67,7 @@ jobs:
         run: |
           branch=${GITHUB_REF##*/}
           ls
-          version=`jq '.version' version.json`
+          version=`jq '.version' version.json` | tr -d '"'
           BRANCH=${branch^^}
           sha=${GITHUB_SHA::8}
           ts=$(date +%s)
@@ -363,6 +363,7 @@ jobs:
             token: ${{ secrets.MANIFESTS_TOKEN }}
         - name: Updating the manifests and pushing
           run: |
+            ls
             tag=${{needs.get-envs.outputs.SHA_TAG}}
             sed -i -e "s|jonsy13/${{ env.FRONTEND_IMAGE }}:.*|jonsy13/${{ env.FRONTEND_IMAGE }}:$tag|g" apps/cluster-scope/cluster-k8s-manifest.yml
             
