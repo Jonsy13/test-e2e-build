@@ -66,7 +66,8 @@ jobs:
       - id: envs
         run: |
           branch=${GITHUB_REF##*/}
-          version=`jq '.version' litmus-portal/version.json`
+          ls
+          version=`jq '.version' version.json`
           BRANCH=${branch^^}
           sha=${GITHUB_SHA::8}
           ts=$(date +%s)
