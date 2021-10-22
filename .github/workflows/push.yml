@@ -367,6 +367,7 @@ jobs:
         - name: Updating the manifests and pushing
           run: |
             tag=${{needs.get-envs.outputs.SHA_TAG}}
+            sed -i -e "s|VERSION: \".*\"|VERSION: \"$tag\"|g" cluster-k8s-manifest.yml
             sed -i -e "s|jonsy13/${{ env.FRONTEND_IMAGE }}:.*|jonsy13/${{ env.FRONTEND_IMAGE }}:$tag|g" cluster-k8s-manifest.yml
             sed -i -e "s|jonsy13/${{ env.GRAPHQL_SERVER_IMAGE }}:.*|jonsy13/${{ env.GRAPHQL_SERVER_IMAGE }}:$tag|g" cluster-k8s-manifest.yml
             sed -i -e "s|jonsy13/${{ env.AUTHENTICATION_SERVER_IMAGE }}:.*|jonsy13/${{ env.AUTHENTICATION_SERVER_IMAGE }}:$tag|g" cluster-k8s-manifest.yml
