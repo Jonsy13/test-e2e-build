@@ -1,4 +1,4 @@
-name: deploy-container
+name: s3-bucket-sync
 
 on:
   push:
@@ -26,5 +26,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_S3_REGION }}
 
-      - name: Copy files to the s3 website content bucket
-        run: aws s3 sync . s3://${{ secrets.AWS_S3_BUCKET_NAME }}/
+      - name: Copy files to the s3 bucket
+        run: |
+          aws s3 sync avatars s3://${{ secrets.AWS_S3_BUCKET_NAME }}/avatars --delete
+          aws s3 sync icons s3://${{ secrets.AWS_S3_BUCKET_NAME }}/icons --delete
+          aws s3 sync index.html s3://${{ secrets.AWS_S3_BUCKET_NAME }}/ 
+          aws s3 sync index.css s3://${{ secrets.AWS_S3_BUCKET_NAME }}/files
+          aws s3 sync favicon.ico s3://${{ secrets.AWS_S3_BUCKET_NAME }}/files
+          aws s3 sync locales/en/translation.yaml s3://${{ secrets.AWS_S3_BUCKET_NAME }}/files
