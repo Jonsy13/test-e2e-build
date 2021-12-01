@@ -25,7 +25,7 @@ jobs:
         with:
           filters: |
             public:
-              - 'frontend/public/**'
+              - 'litmus-portal/frontend/public/**'
 
   build:
     runs-on: ubuntu-latest
