@@ -5,17 +5,34 @@ on:
     branches:
       - master
       - staging
-    paths:
-      - "litmus-portal/frontend/public/**"
 
 defaults:
   run:
-    working-directory: "litmus-portal/frontend/public/"
+    working-directory: "litmus-portal"
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    # Set job outputs to values from filter step
+    outputs:
+      public: ${{ steps.filter.outputs.public }}
+
+    steps:
+      # For pull requests it's not necessary to checkout the code
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            public:
+              - 'frontend/public/**'
+
   build:
     runs-on: ubuntu-latest
-
+    if: needs.changes.outputs.public == 'true'
+    defaults:
+      run:
+        shell: bash
+        working-directory: litmus-portal/frontend/public
     steps:
       - uses: actions/checkout@v2
 

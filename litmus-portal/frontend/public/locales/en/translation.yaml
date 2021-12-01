@@ -16,9 +16,7 @@ getStarted:
     name: password
     label: New Password
     cnfLabel: Confirm Password
-    cnfName: confirmPassword
-    info: Set a new Password
-    desc: Use the new password at your next login.
+
 
 ###########################################
 ############    Components    #############
