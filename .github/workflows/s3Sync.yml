@@ -30,7 +30,7 @@ jobs:
         run: |
           aws s3 sync avatars s3://${{ secrets.AWS_S3_BUCKET_NAME }}/avatars --delete
           aws s3 sync icons s3://${{ secrets.AWS_S3_BUCKET_NAME }}/icons --delete
-          aws s3 sync index.html s3://${{ secrets.AWS_S3_BUCKET_NAME }}/ 
-          aws s3 sync index.css s3://${{ secrets.AWS_S3_BUCKET_NAME }}/files
-          aws s3 sync favicon.ico s3://${{ secrets.AWS_S3_BUCKET_NAME }}/files
-          aws s3 sync locales/en/translation.yaml s3://${{ secrets.AWS_S3_BUCKET_NAME }}/files
+          aws s3 cp index.html s3://${{ secrets.AWS_S3_BUCKET_NAME }}/ 
+          aws s3 cp index.css s3://${{ secrets.AWS_S3_BUCKET_NAME }}/files
+          aws s3 cp favicon.ico s3://${{ secrets.AWS_S3_BUCKET_NAME }}/files
+          aws s3 cp locales/en/translation.yaml s3://${{ secrets.AWS_S3_BUCKET_NAME }}/files
