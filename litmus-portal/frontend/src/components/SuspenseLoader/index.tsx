@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+import Center from '../../containers/layouts/Center';
 import Loader from '../Loader';
 
 interface SuspenseLoaderProps {
@@ -13,7 +14,9 @@ export const SuspenseLoader: React.FC<SuspenseLoaderProps> = ({
     <Suspense
       fallback={
         <div style={style ?? {}}>
-          <Loader />
+          <Center>
+            <Loader />
+          </Center>
         </div>
       }
     >

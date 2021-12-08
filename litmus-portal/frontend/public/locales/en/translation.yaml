@@ -12,7 +12,13 @@ getStarted:
     label: Project Name
     info: Set your project name
     desc: Choose an appropriate name for your project. This project name will be used when collaborating with your team members.
-  password: nam
+  password:
+    name: password
+    label: New Password
+    cnfLabel: Confirm Password
+    cnfName: confirmPassword
+    info: Set a new Password
+    desc: Use the new password at your next login.
 
 ###########################################
 ############    Components    #############
@@ -933,8 +939,9 @@ createWorkflow:
     continueBtn: Continue
     validate: Workflow name can only contain - and alphanumeric characters
     pleaseAddExp: Please add experiments to see the data
-    revertSchedule: Cleanup Chaos Resources
-    retainLogs: To retain experiment logs, set this as False.
+    revertSchedule: Revert Schedule
+    retainLogs: To retain experiment logs, turn this off.
+    retainLogsDesc: Enabling this will make the scheule to revert after completion.
     noTemplates: No template available.
     addTemplate: You can add a template from the scheduled workflows table.
     trueValue: 'True'
@@ -960,6 +967,23 @@ createWorkflow:
     noPredefined: No Pre-defined experiments present
     addPredefined: Add a pre-defined workflow to continue scheduling.
     searchTerm: Enter a correct search term
+    advance: Advanced options to tune workflow
+    advanceDesc: Modify node selector, cleanup workflow resource and tolerations.
+    nodeSelector: Node Selector
+    nodeSelectorDesc: NodeSelector is a selector which will result in all pods of the workflow to be scheduled on the selected node.
+    nodeSelectorValue: 'kubernetes.io/hostname'
+    toleration: Toleration
+    tolerationDesc: Tolerations are applied to pods, and allow the pods to schedule onto nodes with matching taints.
+    effect: effect
+    key: key
+    operator: operator
+    value: value
+    cleanUp: Cleanup Chaos Workflow Pods
+    cleanUpDesc: Delete Chaos Workflow pods after completion or successful execution.
+    strategy: 'podGC.strategy'
+    podGC: podGC
+    complete: OnWorkflowCompletion
+    success: OnWorkflowSuccess
   reliabilityScore:
     header: Adjust the weights of the experiments in the Litmus workflow
     info: You have selected
@@ -1113,6 +1137,8 @@ createWorkflow:
         labelSel: LabelSelector
         endpoint: Endpoint
         query: Query
+        image: Image
+        hostNetwork: hostNetwork
       select:
         http: http
         cmd: cmd
@@ -1157,6 +1183,10 @@ createWorkflow:
 ######################################
 
 targets:
+  options:
+    upgrade: Upgrade
+    copyTargetID: Copy target ID
+    disconnect: Disconnect
   connectHome:
     head: ChaosAgents
     connectText: Connect the Agent
@@ -1169,6 +1199,10 @@ targets:
     head1: Open the cluster console
     head2: Download litmusctl
     head3: Paste and Run the following command into the cluster console
+  modalUpgrade:
+    head1: Upgrade Agent
+    copyUpgradeCommand: Copy & Paste this command to your cluster console to upgrade the agent.
+    done: Done
   modalDelete:
     head1: Are you sure to
     head2: disconnect the current

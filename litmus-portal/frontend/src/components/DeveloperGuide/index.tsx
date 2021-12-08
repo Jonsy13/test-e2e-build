@@ -1,5 +1,5 @@
 import { Typography, useTheme } from '@material-ui/core';
-import { Icon } from 'litmus-ui/core/Icon';
+import { Icon } from 'litmus-ui';
 import * as React from 'react';
 import useStyles from './styles';
 

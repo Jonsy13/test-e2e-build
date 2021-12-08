@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import InputField from 'litmus-ui/core/Input/InputField';
+import { InputField } from 'litmus-ui';
 import useStyles from './styles';
 import {
   isValidWebUrl,

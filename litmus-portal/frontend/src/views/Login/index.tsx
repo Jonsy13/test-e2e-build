@@ -1,4 +1,4 @@
-import Typography from '@material-ui/core/Typography';
+import { Typography } from '@material-ui/core';
 import React from 'react';
 import Center from '../../containers/layouts/Center';
 import useStyles from './styles';

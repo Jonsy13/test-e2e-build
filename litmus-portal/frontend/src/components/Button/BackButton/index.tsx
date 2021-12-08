@@ -4,7 +4,7 @@ import {
   Typography,
   useTheme,
 } from '@material-ui/core';
-import { Icon } from 'litmus-ui/core/Icon';
+import { Icon } from 'litmus-ui';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { history } from '../../../redux/configureStore';

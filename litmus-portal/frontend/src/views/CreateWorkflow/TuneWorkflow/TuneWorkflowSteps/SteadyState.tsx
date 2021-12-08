@@ -107,7 +107,7 @@ const SteadyState: React.FC<SteadyStateProps> = ({ gotoStep }) => {
   };
 
   return (
-    <div>
+    <div data-cy="SteadyState">
       <TableContainer className={classes.table} component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
@@ -285,7 +285,7 @@ const SteadyState: React.FC<SteadyStateProps> = ({ gotoStep }) => {
         handleClose={handleClose}
         open={addProbe}
       />
-      <div>
+      <div data-cy="SteadyStateControlButtons">
         <Button onClick={() => gotoStep(1)} className={classes.button}>
           {t('createWorkflow.tuneWorkflow.steadyState.back')}
         </Button>

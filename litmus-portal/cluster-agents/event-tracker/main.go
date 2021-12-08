@@ -17,28 +17,28 @@ limitations under the License.
 package main
 
 import (
+	"crypto/tls"
 	"flag"
 	"log"
+	"net/http"
 	"os"
+	rt "runtime"
+	"strings"
 	"time"
 
+	"github.com/kelseyhightower/envconfig"
+	eventtrackerv1 "github.com/litmuschaos/litmus/litmus-portal/cluster-agents/event-tracker/api/v1"
+	"github.com/litmuschaos/litmus/litmus-portal/cluster-agents/event-tracker/controllers"
 	"github.com/litmuschaos/litmus/litmus-portal/cluster-agents/event-tracker/pkg/k8s"
 	"github.com/litmuschaos/litmus/litmus-portal/cluster-agents/event-tracker/pkg/utils"
 	"github.com/sirupsen/logrus"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/informers"
-
-	rt "runtime"
-
-	eventtrackerv1 "github.com/litmuschaos/litmus/litmus-portal/cluster-agents/event-tracker/api/v1"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	ctrl "sigs.k8s.io/controller-runtime"
-
-	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
-
-	"github.com/litmuschaos/litmus/litmus-portal/cluster-agents/event-tracker/controllers"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -47,13 +47,27 @@ var (
 	setupLog = ctrl.Log.WithName("setup")
 )
 
+type Config struct {
+	Version            string `required:"true"`
+	AgentScope         string `required:"true" split_words:"true"`
+	IsClusterConfirmed string `required:"true" split_words:"true"`
+	AccessKey          string `required:"true" split_words:"true"`
+	ClusterId          string `required:"true" split_words:"true"`
+	ServerAddr         string `required:"true" split_words:"true"`
+	AgentNamespace     string `required:"true" split_words:"true"`
+	SkipSSLVerify      bool   `default:"false" split_words:"true"`
+}
+
 func init() {
 
 	logrus.Info("Go Version: ", rt.Version())
 	logrus.Info("Go OS/Arch: ", rt.GOOS, "/", rt.GOARCH)
 
-	if os.Getenv("VERSION") == "" || os.Getenv("AGENT_SCOPE") == "" || os.Getenv("IS_CLUSTER_CONFIRMED") == "" || os.Getenv("ACCESS_KEY") == "" || os.Getenv("CLUSTER_ID") == "" || os.Getenv("SERVER_ADDR") == "" || os.Getenv("AGENT_NAMESPACE") == "" {
-		logrus.Fatal("Some environment variable are not setup")
+	var c Config
+
+	err := envconfig.Process("", &c)
+	if err != nil {
+		logrus.Fatal(err)
 	}
 
 	_ = clientgoscheme.AddToScheme(scheme)
@@ -99,6 +113,11 @@ func main() {
 		mgr         manager.Manager
 		err         error
 	)
+
+	// disable ssl verification if configured
+	if strings.ToLower(os.Getenv("SKIP_SSL_VERIFY")) == "true" {
+		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	}
 
 	if agent_scope == "namespace" {
 		mgr, err = ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{

@@ -417,7 +417,11 @@ const TableData: React.FC<TableDataProps> = ({
             <></>
           )}
           {projectRole !== 'Viewer' && data.cronSyntax === '' ? (
-            <MenuItem value="Rerun_Schedule" onClick={() => reRunSchedule()}>
+            <MenuItem
+              value="Rerun_Schedule"
+              data-cy="rerunSchedule"
+              onClick={() => reRunSchedule()}
+            >
               <div className={classes.expDiv}>
                 <ReplayIcon className={classes.rerunBtn} />
                 <Typography data-cy="reRunSchedule" className={classes.btnText}>
@@ -552,7 +556,7 @@ const TableData: React.FC<TableDataProps> = ({
             <Typography className={classes.modalConfirm}>
               {t('createWorkflow.scheduleWorkflow.modalSubheader')}
             </Typography>
-            <div className={classes.modalBtns}>
+            <div className={classes.modalBtns} data-cy="deleteScheduleButtons">
               <ButtonOutlined onClick={() => setIsModalOpen(false)}>
                 {t('createWorkflow.scheduleWorkflow.cancelBtn')}
               </ButtonOutlined>

@@ -4,8 +4,7 @@ import React from 'react';
 import LinearProgressBar from '../../../components/ProgressBar/LinearProgressBar';
 import StatisticsLinearProgressBar from '../../../components/ProgressBar/StatisticsLinearProgressBar';
 import ExperimentStatus from '../../../views/Observability/WorkflowStatistics/ExperimentStatus';
-import useStyles from './styles';
-import { StyledTableCell } from '../../../components/StyledTableCell';
+import useStyles, { StyledTableCell } from './styles';
 
 interface WorkFlowTests {
   test_id: number;

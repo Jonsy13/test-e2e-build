@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   rootContainer: {
@@ -33,5 +33,4 @@ const useStyles = makeStyles((theme) => ({
     left: 20,
   },
 }));
-
 export default useStyles;

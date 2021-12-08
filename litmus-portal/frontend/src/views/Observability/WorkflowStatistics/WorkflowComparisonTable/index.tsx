@@ -16,7 +16,7 @@ import ExpandMoreTwoToneIcon from '@material-ui/icons/ExpandMoreTwoTone';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import groupBy from 'lodash.groupby';
+import * as _ from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -298,19 +298,23 @@ const WorkflowComparisonTable = () => {
         }
 
         timeSeriesArray.forEach((workflowTimeSeriesData, index) => {
-          const hourlyGroupedResults = groupBy(workflowTimeSeriesData, (data) =>
-            moment
-              .unix(parseInt(data.date, 10))
-              .startOf('hour')
-              .format('YYYY-MM-DD HH:mm:ss')
+          const hourlyGroupedResults = _.groupBy(
+            workflowTimeSeriesData,
+            (data) =>
+              moment
+                .unix(parseInt(data.date, 10))
+                .startOf('hour')
+                .format('YYYY-MM-DD HH:mm:ss')
           );
-          const dailyGroupedResults = groupBy(workflowTimeSeriesData, (data) =>
-            moment
-              .unix(parseInt(data.date, 10))
-              .startOf('day')
-              .format('YYYY-MM-DD')
+          const dailyGroupedResults = _.groupBy(
+            workflowTimeSeriesData,
+            (data) =>
+              moment
+                .unix(parseInt(data.date, 10))
+                .startOf('day')
+                .format('YYYY-MM-DD')
           );
-          const monthlyGroupedResults = groupBy(
+          const monthlyGroupedResults = _.groupBy(
             workflowTimeSeriesData,
             (data) =>
               moment
@@ -768,6 +772,7 @@ const WorkflowComparisonTable = () => {
                             key={data.workflow_id}
                             selected={isItemSelected}
                             classes={{ selected: classes.tableRowSelected }}
+                            data-cy={data.workflow_name}
                           >
                             <TableData
                               data={data}

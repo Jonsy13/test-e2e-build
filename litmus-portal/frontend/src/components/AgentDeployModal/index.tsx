@@ -1,6 +1,6 @@
 import { Typography, useTheme } from '@material-ui/core';
 import DoneIcon from '@material-ui/icons/Done';
-import { ButtonFilled, ButtonOutlined, Icon } from 'litmus-ui/core';
+import { ButtonFilled, ButtonOutlined, Icon } from 'litmus-ui';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useStyles from './styles';

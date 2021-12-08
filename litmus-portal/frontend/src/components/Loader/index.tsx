@@ -1,6 +1,9 @@
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
+import {
+  CircularProgress,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import React from 'react';
 import Center from '../../containers/layouts/Center';
 
