@@ -1,9 +1,9 @@
 name: Litmus-CI
 on:
-  issue_comment:
-    types: [created]
+  pull_request:
     branches:
       - master
+      - v*
 
 jobs:
   # Job for finding last commit sha of pull-request
