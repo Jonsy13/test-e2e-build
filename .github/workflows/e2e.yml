@@ -54,10 +54,6 @@ jobs:
               - 'litmus-portal/graphql-server/**'
             authentication:
               - 'litmus-portal/authentication/**'
-            subscriber:
-              - 'litmus-portal/cluster-agents/subscriber/**'
-            event-tracker:
-              - 'litmus-portal/cluster-agents/event-tracker/**'
 
   docker-build-image:
     if: contains(github.event.comment.html_url, '/pull/') && startsWith(github.event.comment.body, '/run-e2e')
