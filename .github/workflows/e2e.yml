@@ -146,13 +146,12 @@ jobs:
 
       - name: Deploying Prometheus as a DataSource
         run: |
-          mkdir monitoring && cd monitoring
-          git clone https://github.com/litmuschaos/litmus.git && cd litmus/monitoring
+          cd monitoring
           kubectl create ns monitoring
           kubectl -n monitoring apply -f utils/prometheus/prometheus-scrape-configuration/
           kubectl -n monitoring apply -f utils/metrics-exporters/node-exporter/
           kubectl -n monitoring apply -f utils/metrics-exporters/kube-state-metrics/
-          source ../../../litmus/utils.sh
+          source ../litmus-e2e/litmus/utils.sh
           wait_for_pods monitoring 720
           wait_for_loadbalancer prometheus-k8s monitoring
           loadBalancerIP=$(kubectl get services prometheus-k8s -n monitoring -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
@@ -170,14 +169,14 @@ jobs:
 
       # RBAC for allowing Cypress Runner to access Cluster resources
       - run: |
-          kubectl apply -f Cypress/cypress-rbac.yml
+          kubectl apply -f litmus-e2e/Cypress/cypress-rbac.yml
 
       - name: Running basic tests (Login and Onboarding Tests)
         uses: cypress-io/github-action@v2
         continue-on-error: false
         with:
           spec: cypress/integration/Basic_Setup/**/*.spec.js
-          working-directory: Cypress/
+          working-directory: litmus-e2e/Cypress/
           config-file: cypress.prod.json
           env: true
         env:
@@ -187,7 +186,7 @@ jobs:
         if: always()
         run: |
           kubectl config use-context k3d-${{ env.SELF_AGENT }}
-          source ./litmus/utils.sh
+          source ./litmus-e2e/litmus/utils.sh
           verify_all_components ${COMPONENTS} ${NAMESPACE}
           wait_for_pods ${NAMESPACE} 720
         env:
@@ -200,7 +199,7 @@ jobs:
         continue-on-error: false
         with:
           spec: cypress/integration/Parallel_Tests/**/*.spec.js
-          working-directory: Cypress/
+          working-directory: litmus-e2e/Cypress/
           config-file: cypress.prod.json
           env: true
         env:
