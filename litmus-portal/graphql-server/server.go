@@ -74,7 +74,7 @@ func init() {
 	if err != nil {
 		logrus.Fatal(err)
 	}
-	// confirm version env is valid
+	// confirm version env is v
 	if !strings.Contains(strings.ToLower(c.Version), cluster.CIVersion) {
 		splitCPVersion := strings.Split(c.Version, ".")
 		if len(splitCPVersion) != 3 {
