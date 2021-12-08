@@ -134,7 +134,7 @@ func main() {
 		},
 	})
 
-	// to be removed in production
+	// to be removed in produ
 	srv.Use(extension.Introspection{})
 
 	router := mux.NewRouter()
