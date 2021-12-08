@@ -113,7 +113,7 @@ func main() {
 		rpcPort = utils.DefaultRPCPort
 	}
 
-	// Initialize the mongo client
+	// Initialize the mongo cli
 	mongodb.Client = mongodb.Client.Initialize()
 
 	if err := validateVersion(); err != nil {
