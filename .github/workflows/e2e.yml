@@ -9,7 +9,7 @@ jobs:
   # Job for finding last commit sha of pull-request
   find-latest-commit-sha:
     if: contains(github.event.comment.html_url, '/pull/') && startsWith(github.event.comment.body, '/run-e2e')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     outputs:
       commit-sha: ${{ steps.getcommit.outputs.sha }}
     steps:
@@ -32,7 +32,7 @@ jobs:
 
   find-changes:
     if: contains(github.event.comment.html_url, '/pull/') && startsWith(github.event.comment.body, '/run-e2e')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: find-latest-commit-sha
     # Set job outputs to values from filter step
     outputs:
@@ -57,7 +57,7 @@ jobs:
 
   docker-build-image:
     if: contains(github.event.comment.html_url, '/pull/') && startsWith(github.event.comment.body, '/run-e2e')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: [find-latest-commit-sha, find-changes]
     strategy:
       # Matrix of changed directories for building images in parallel
@@ -85,7 +85,7 @@ jobs:
   tests:
     if: contains(github.event.comment.html_url, '/pull/') && startsWith(github.event.comment.body, '/run-e2e')
     needs: [find-latest-commit-sha, docker-build-image]
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -106,12 +106,17 @@ jobs:
             ****
             **Test Status:** The testing has been started please wait for the results ...
 
-      - name: Setting up KinD Cluster
-        run: kind create cluster --wait 5m
+      - uses: AbsaOSS/k3d-action@v2
+        name: Create k3d cluster
+        with:
+          cluster-name: self-agent
+          args: >
+            --agents 3
+            --k3s-arg "--no-deploy=traefik, metrics-server@server:*"
 
       - name: Configuring and Testing the Cluster Installation
         run: |
-          kubectl cluster-info --context kind-kind
+          kubectl cluster-info --context k3d-self-agent
           kubectl get nodes
           kubectl get pods -n kube-system
 
@@ -161,7 +166,7 @@ jobs:
       # Fetching Access Point & Token for accessing kube api server
       - run: |
           kubectl config view -o jsonpath='{"Cluster name\tServer\n"}{range .clusters[*]}{.name}{"\t"}{.cluster.server}{"\n"}{end}'
-          export CLUSTER_NAME=kind-kind
+          export CLUSTER_NAME=k3d-self-agent
           KUBE_API_SERVER=$(kubectl config view -o jsonpath="{.clusters[?(@.name==\"$CLUSTER_NAME\")].cluster.server}")
           KUBE_API_TOKEN=$(kubectl get secrets -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='default')].data.token}"|base64 --decode)
           echo "KUBE_API_SERVER=$KUBE_API_SERVER" >> $GITHUB_ENV
@@ -185,7 +190,7 @@ jobs:
       - name: Verifying the execution-plane components
         if: always()
         run: |
-          kubectl config use-context kind-kind
+          kubectl config use-context k3d-self-agent
           source ./litmus-e2e/litmus/utils.sh
           verify_all_components ${COMPONENTS} ${NAMESPACE}
           wait_for_pods ${NAMESPACE} 720
