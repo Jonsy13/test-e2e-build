@@ -47,7 +47,7 @@ func init() {
 }
 
 func main() {
-	// send logs to stderr so we can use 'kubectl logs'
+	// send logs to stderr so we can use 'kubec
 	_ = flag.Set("logtostderr", "true")
 	_ = flag.Set("v", "3")
 
