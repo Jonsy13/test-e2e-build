@@ -153,6 +153,14 @@ jobs:
           verify_all_components litmusportal-frontend,litmusportal-server litmus
           wait_for_pods litmus 720
 
+      - name: Getting the AccessURL for ChaosCenter
+        run: |
+          export NODE_NAME=$(kubectl -n litmus get pod  -l "component=litmusportal-frontend" -o=jsonpath='{.items[*].spec.nodeName}')
+          export NODE_IP=$(kubectl -n litmus get nodes $NODE_NAME -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}')
+          export NODE_PORT=$(kubectl -n litmus get -o jsonpath="{.spec.ports[0].nodePort}" services litmusportal-frontend-service)
+          export AccessURL="http://$NODE_IP:$NODE_PORT"
+          echo "URL=$AccessURL" >> $GITHUB_ENV
+
       # Fetching Access Point & Token for accessing kube api server
       - name: Configuring Kube-Api server
         if: contains(${{ matrix.TestTag }}, "scheduling") || contains(${{ matrix.TestTag }}, "datasource") || contains(${{ matrix.TestTag }}, "dashboard")
