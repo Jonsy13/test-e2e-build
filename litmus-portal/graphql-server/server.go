@@ -120,7 +120,7 @@ func main() {
 		logrus.Fatal(err)
 	}
 
-	go startGRPCServer(rpcPort) // start GRPC server
+	go startGRPCServer(rpcPort) // start GRPC 
 
 	srv := handler.New(generated.NewExecutableSchema(graph.NewConfig()))
 	srv.AddTransport(transport.POST{})
