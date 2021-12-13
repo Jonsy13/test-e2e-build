@@ -298,7 +298,7 @@ jobs:
       - name: Push frontend docker image ( ${{ matrix.frontend.image_name }} )
         env:
           IMG_TAG: ${IMG_TAG}
-          PLATFORMS: ${{ secrets.PLATFORMS }}
+          PLATFORMS: linux/amd64
           REPONAME: ${{ secrets.REPONAME }}
           timestamp: ${timestamp}
           PUBLIC_URL: ${{ matrix.frontend.path }}
