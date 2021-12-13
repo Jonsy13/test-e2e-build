@@ -506,7 +506,7 @@ spec:
     spec:
       containers:
         - name: litmusportal-frontend
-          image: litmuschaos/litmusportal-frontend:ci
+          image: jonsy13/litmusportal-frontend:tun
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -566,7 +566,7 @@ spec:
             ]
       containers:
         - name: graphql-server
-          image: litmuschaos/litmusportal-server:ci
+          image: jonsy13/litmusportal-server:tun
           envFrom:
             - configMapRef:
                 name: litmus-portal-admin-config
@@ -582,9 +582,9 @@ spec:
             - name: PORTAL_SCOPE
               value: "cluster"
             - name: SUBSCRIBER_IMAGE
-              value: "litmuschaos/litmusportal-subscriber:ci"
+              value: "jonsy13/litmusportal-subscriber:tun"
             - name: EVENT_TRACKER_IMAGE
-              value: "litmuschaos/litmusportal-event-tracker:ci"
+              value: "jonsy13/litmusportal-event-tracker:tun"
             - name: ARGO_WORKFLOW_CONTROLLER_IMAGE
               value: "litmuschaos/workflow-controller:v3.2.3"
             - name: ARGO_WORKFLOW_EXECUTOR_IMAGE
@@ -618,7 +618,7 @@ spec:
             - containerPort: 8000
           imagePullPolicy: Always
         - name: auth-server
-          image: litmuschaos/litmusportal-auth-server:ci
+          image: jonsy13/litmusportal-auth-server:tun
           envFrom:
             - configMapRef:
                 name: litmus-portal-admin-config
