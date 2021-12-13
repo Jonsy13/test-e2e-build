@@ -163,17 +163,17 @@ jobs:
 
       # Fetching Access Point & Token for accessing kube api server
       - name: Configuring Kube-Api server
-        if: contains(${{ matrix.TestTag }}, "scheduling") || contains(${{ matrix.TestTag }}, "datasource") || contains(${{ matrix.TestTag }}, "dashboard")
+        if: contains( matrix.TestTag , "scheduling") || contains( matrix.TestTag , "datasource") || contains( matrix.TestTag , "dashboard")
         run: |
           kubectl config view -o jsonpath='{"Cluster name\tServer\n"}{range .clusters[*]}{.name}{"\t"}{.cluster.server}{"\n"}{end}'
-          export CLUSTER_NAME=k3d-${SELF_AGENT}
+          export CLUSTER_NAME=k3d-self-agent
           KUBE_API_SERVER=$(kubectl config view -o jsonpath="{.clusters[?(@.name==\"$CLUSTER_NAME\")].cluster.server}")
           KUBE_API_TOKEN=$(kubectl get secrets -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='default')].data.token}"|base64 --decode)
           echo "KUBE_API_SERVER=$KUBE_API_SERVER" >> $GITHUB_ENV
           echo "KUBE_API_TOKEN=$KUBE_API_TOKEN" >> $GITHUB_ENV
 
       - name: Deploying Prometheus as a DataSource
-        if: contains(${{ matrix.TestTag }}, "data-source") || contains(${{ matrix.TestTag }}, "dashboard")
+        if: contains( matrix.TestTag , "scheduling") || contains( matrix.TestTag , "datasource") || contains( matrix.TestTag , "dashboard")
         run: |
           cd monitoring
           kubectl create ns monitoring
@@ -189,7 +189,7 @@ jobs:
 
       # RBAC for allowing Cypress Runner to access Cluster resources
       - name: Setting RBAC for Cypress for running e2e tests
-        if: contains(${{ matrix.TestTag }}, "scheduling") || contains(${{ matrix.TestTag }}, "datasource") || contains(${{ matrix.TestTag }}, "dashboard")
+        if: contains( matrix.TestTag , "scheduling") || contains( matrix.TestTag , "datasource") || contains( matrix.TestTag , "dashboard")
         run: |
           kubectl apply -f ./litmus-e2e/Cypress/cypress-rbac.yml
 
@@ -204,7 +204,7 @@ jobs:
           CYPRESS_BASE_URL: ${{ env.URL }}
           CYPRESS_INCLUDE_TAGS: ${{ matrix.TestTag }}
           CYPRESS_KUBE_API_TOKEN: ${{ env.KUBE_API_TOKEN }}
-          CYPRESS_KUBE_API_SERVER: ${{ env.KUBE_API_SERVER}}
+          CYPRESS_KUBE_API_SERVER: ${{ env.KUBE_API_SERVER }}
           CYPRESS_AGENT_NAMESPACE: "litmus"
           CYPRESS_AGENT: "Self-Agent"
           CYPRESS_TARGET_APP_NS: "default"
