@@ -58,7 +58,7 @@ func main() {
 		log.Fatal("database connection error $s", err)
 	}
 
-	// Creating User Collection
+	// Creating User Collec
 	err = utils.CreateCollection(utils.UserCollection, db)
 	if err != nil {
 		log.Fatalf("failed to create collection  %s", err)
