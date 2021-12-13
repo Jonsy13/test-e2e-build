@@ -141,7 +141,7 @@ jobs:
       # Loading all build images of changed components in KIND Cluster
       - name: loading the docker build artifacts into KIND Cluster
         run: |
-          ls -1 Images/*.tar | xargs --no-run-if-empty -L 1 k3d image import
+          ls -1 Images/*.tar | xargs --no-run-if-empty -L 1 k3d image import -c self-agent
 
       - name: Deploying the litmus-portal for E2E testing
         run: |
