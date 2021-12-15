@@ -39,7 +39,7 @@ frontend-services-checks:
 	@echo "------------------"
 	@echo "--> Check litmusportal frontend [depcheck]"
 	@echo "------------------"
-	cd frontend && npm i depcheck --no-save && node_modules/.bin/depcheck --skip-missing .
+	cd frontend && npm i depcheck@ --no-save && node_modules/.bin/depcheck --skip-missing .
 
 backend-services-checks:
 	@echo "------------------"

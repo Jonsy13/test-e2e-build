@@ -122,6 +122,6 @@
     "typescript": "^3.9.9"
   },
   "overrides": {
-    "@babel/parser": "7.16.4"
+    "depcheck/@babel/parser": "7.16.4"
   }
 }
