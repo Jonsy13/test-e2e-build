@@ -1,52 +1,309 @@
-name: Release
+# name: Release
+# on:
+#   release:
+#     types: [published]
+
+# defaults:
+#   run:
+#     working-directory: litmus-portal
+#     shell: bash
+
+# # All Image names are provided here as envs. (Will be available in all jobs)
+# env:
+#   GRAPHQL_SERVER_IMAGE: "clc-server"
+#   AUTHENTICATION_SERVER_IMAGE: "clc-auth-server"
+#   FRONTEND_IMAGE: "clc-frontend" #Not getting used
+#   SUBSCRIBER_IMAGE: "clc-subscriber"
+#   EVENT_TRACKER: "clc-event-tracker"
+#   UPGRADE_AGENT_CP: "clc-upgrade-agent-cp"
+
+# jobs:
+#   get-envs:
+#     runs-on: ubuntu-latest
+#     # Images with 2 tags will be created -
+#     # 1. TAG: <branch-ci> e.g. master-ci, will be used for testing
+#     # 2. SHA_TAG: <branch>-<github-sha>-<timestamp>, for gitops automation
+
+#     # We will have 2 CAPTCHA_SITE_KEY variables depending on branch
+#     # 1. REACT_APP_MASTER_CAPTCHA_SITE_KEY
+#     # 2. REACT_APP_STAGING_CAPTCHA_SITE_KEY
+#     outputs:
+#       RELEASE_TAG: ${{ steps.envs.outputs.RELEASE_TAG }}
+#       TIME_STAMP: ${{ steps.envs.outputs.TIME_STAMP }}
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
+#       - id: envs
+#         run: |
+#           TAG="${GITHUB_REF#refs/*/}"
+#           ts=$(date +%s)
+#           echo "::set-output name=RELEASE_TAG::$TAG"
+#           echo "::set-output name=TIME_STAMP::${ts}"
+
+#   docker-build-and-push-graphql-server:
+#     runs-on: ubuntu-latest
+#     needs:
+#       - get-envs
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+
+#       - name: Set up Docker Buildx
+#         id: buildx
+#         uses: docker/setup-buildx-action@v1
+#         with:
+#           version: latest
+
+#       - name: Set up QEMU
+#         uses: docker/setup-qemu-action@v1
+#         with:
+#           platforms: all
+
+#       - name: Login to DockerHub
+#         uses: docker/login-action@v1
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+#       - name: Build and push
+#         uses: docker/build-push-action@v2
+#         env:
+#           RELEASE_TAG: ${{ needs.get-envs.outputs.RELEASE_TAG }}
+#         with:
+#           push: true
+#           file: ./litmus-portal/graphql-server/Dockerfile
+#           context: ./litmus-portal/graphql-server
+#           platforms: ${{ secrets.PLATFORMS }}
+#           tags: ${{ secrets.REPONAME }}/${{ env.GRAPHQL_SERVER_IMAGE }}:${{ env.RELEASE_TAG }}
+
+#   docker-build-and-push-authentication-server:
+#     runs-on: ubuntu-latest
+#     needs:
+#       - get-envs
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+
+#       - name: Set up Docker Buildx
+#         id: buildx
+#         uses: docker/setup-buildx-action@v1
+#         with:
+#           version: latest
+
+#       - name: Set up QEMU
+#         uses: docker/setup-qemu-action@v1
+#         with:
+#           platforms: all
+
+#       - name: Login to DockerHub
+#         uses: docker/login-action@v1
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+#       - name: Build and push
+#         uses: docker/build-push-action@v2
+#         env:
+#           RELEASE_TAG: ${{ needs.get-envs.outputs.RELEASE_TAG }}
+#         with:
+#           push: true
+#           file: ./litmus-portal/authentication/Dockerfile
+#           context: ./litmus-portal/authentication
+#           platforms: ${{ secrets.PLATFORMS }}
+#           tags: ${{ secrets.REPONAME }}/${{ env.AUTHENTICATION_SERVER_IMAGE }}:${{ env.RELEASE_TAG }}
+
+#   docker-build-and-push-subscriber:
+#     runs-on: ubuntu-latest
+#     needs:
+#       - get-envs
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+
+#       - name: Set up Docker Buildx
+#         id: buildx
+#         uses: docker/setup-buildx-action@v1
+#         with:
+#           version: latest
+
+#       - name: Set up QEMU
+#         uses: docker/setup-qemu-action@v1
+#         with:
+#           platforms: all
+
+#       - name: Login to DockerHub
+#         uses: docker/login-action@v1
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+#       - name: Build and push
+#         uses: docker/build-push-action@v2
+#         env:
+#           RELEASE_TAG: ${{ needs.get-envs.outputs.RELEASE_TAG }}
+#         with:
+#           push: true
+#           file: ./litmus-portal/cluster-agents/subscriber/Dockerfile
+#           context: ./litmus-portal/cluster-agents/subscriber
+#           platforms: ${{ secrets.PLATFORMS }}
+#           tags: ${{ secrets.REPONAME }}/${{ env.SUBSCRIBER_IMAGE }}:${{ env.RELEASE_TAG }}
+
+#   docker-build-and-push-event-tracker:
+#     runs-on: ubuntu-latest
+#     needs:
+#       - get-envs
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+
+#       - name: Set up Docker Buildx
+#         id: buildx
+#         uses: docker/setup-buildx-action@v1
+#         with:
+#           version: latest
+
+#       - name: Set up QEMU
+#         uses: docker/setup-qemu-action@v1
+#         with:
+#           platforms: all
+
+#       - name: Login to DockerHub
+#         uses: docker/login-action@v1
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+#       - name: Build and push
+#         uses: docker/build-push-action@v2
+#         env:
+#           RELEASE_TAG: ${{ needs.get-envs.outputs.RELEASE_TAG }}
+#         with:
+#           push: true
+#           file: ./litmus-portal/cluster-agents/event-tracker/Dockerfile
+#           context: ./litmus-portal/cluster-agents/event-tracker
+#           platforms: ${{ secrets.PLATFORMS }}
+#           tags: ${{ secrets.REPONAME }}/${{ env.EVENT_TRACKER }}:${{ env.RELEASE_TAG }}
+
+#   docker-build-and-push-upgrade-agent-cp:
+#     runs-on: ubuntu-latest
+#     needs:
+#       - get-envs
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+
+#       - name: Set up Docker Buildx
+#         id: buildx
+#         uses: docker/setup-buildx-action@v1
+#         with:
+#           version: latest
+
+#       - name: Set up QEMU
+#         uses: docker/setup-qemu-action@v1
+#         with:
+#           platforms: all
+
+#       - name: Login to DockerHub
+#         uses: docker/login-action@v1
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+#       - name: Build and push
+#         uses: docker/build-push-action@v2
+#         env:
+#           RELEASE_TAG: ${{ needs.get-envs.outputs.RELEASE_TAG }}
+#         with:
+#           push: true
+#           file: ./litmus-portal/upgrade-agents/control-plane/Dockerfile
+#           context: ./litmus-portal/upgrade-agents/control-plane
+#           platforms: ${{ secrets.PLATFORMS }}
+#           tags: ${{ secrets.REPONAME }}/${{ env.UPGRADE_AGENT_CP }}:${{ env.RELEASE_TAG }}
+
+#   ## TODO: the build time for multiarch frontend image is higher so it is used in the release
+#   ## builds only need to optimize the build duration and also add it with ci tag
+#   ## Build and push / base path
+#   docker-build-and-push-frontend:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         frontend:
+#           [
+#             { "image_name": "clc-frontend", "path": "" },
+#             {
+#               "image_name": "clc-frontend-path-litmuschaos",
+#               "path": "/litmuschaos",
+#             },
+#           ]
+#     needs:
+#       - get-envs
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+
+#       - name: Set up Docker Buildx
+#         id: buildx
+#         uses: docker/setup-buildx-action@v1
+#         with:
+#           version: latest
+
+#       - name: Set up QEMU
+#         uses: docker/setup-qemu-action@v1
+#         with:
+#           platforms: all
+
+#       - name: Login to DockerHub
+#         uses: docker/login-action@v1
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+#       - name: Build and push
+#         uses: docker/build-push-action@v2
+#         env:
+#           RELEASE_TAG: ${{ needs.get-envs.outputs.RELEASE_TAG }}
+#           TIME_STAMP: ${{ needs.get-envs.outputs.TIME_STAMP }}
+#         with:
+#           push: true
+#           file: ./litmus-portal/frontend/Dockerfile
+#           context: ./litmus-portal/frontend
+#           platforms: linux/amd64
+#           build-args: |
+#             REACT_APP_KB_CHAOS_VERSION=${{ env.RELEASE_TAG }}
+#             REACT_APP_BUILD_TIME=${{ env.TIME_STAMP }}
+#             PUBLIC_URL=${{ matrix.frontend.path }}
+#             REACT_APP_CAPTCHA_SITE_KEY=${{ secrets.REACT_APP_MASTER_CAPTCHA_SITE_KEY }}
+#           tags: |
+#             ${{ secrets.REPONAME }}/${{ matrix.frontend.image_name }}:${{ env.RELEASE_TAG }}
+
+---
+name: release
+
 on:
-  release:
-    types: [published]
-
-defaults:
-  run:
-    working-directory: litmus-portal
-    shell: bash
-
-# All Image names are provided here as envs. (Will be available in all jobs)
-env:
-  GRAPHQL_SERVER_IMAGE: "clc-server"
-  AUTHENTICATION_SERVER_IMAGE: "clc-auth-server"
-  FRONTEND_IMAGE: "clc-frontend" #Not getting used
-  SUBSCRIBER_IMAGE: "clc-subscriber"
-  EVENT_TRACKER: "clc-event-tracker"
-  UPGRADE_AGENT_CP: "clc-upgrade-agent-cp"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "release tag"
+        required: true
+      release_title:
+        description: "release title"
+        required: false
+      release_notes:
+        description: "release notes"
+        required: false
+        default: ""
 
 jobs:
-  get-envs:
+  push:
     runs-on: ubuntu-latest
-    # Images with 2 tags will be created -
-    # 1. TAG: <branch-ci> e.g. master-ci, will be used for testing
-    # 2. SHA_TAG: <branch>-<github-sha>-<timestamp>, for gitops automation
-
-    # We will have 2 CAPTCHA_SITE_KEY variables depending on branch
-    # 1. REACT_APP_MASTER_CAPTCHA_SITE_KEY
-    # 2. REACT_APP_STAGING_CAPTCHA_SITE_KEY
-    outputs:
-      RELEASE_TAG: ${{ steps.envs.outputs.RELEASE_TAG }}
-      TIME_STAMP: ${{ steps.envs.outputs.TIME_STAMP }}
+    needs: create_release
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - id: envs
-        run: |
-          TAG="${GITHUB_REF#refs/*/}"
-          ts=$(date +%s)
-          echo "::set-output name=RELEASE_TAG::$TAG"
-          echo "::set-output name=TIME_STAMP::${ts}"
+      - uses: actions/checkout@v2
 
-  docker-build-and-push-graphql-server:
-    runs-on: ubuntu-latest
-    needs:
-      - get-envs
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
@@ -54,224 +311,70 @@ jobs:
         with:
           version: latest
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-        with:
-          platforms: all
-
-      - name: Login to DockerHub
+      - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DNAME }}
+          password: ${{ secrets.DPASS }}
 
-      - name: Build and push
+      # - name: Build and push experiment-alpine
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     push: true
+      #     file: custom/hardened-alpine/experiment/Dockerfile
+      #     platforms: linux/amd64,linux/arm64
+      #     build-args: LITMUS_VERSION=${{ github.event.inputs.release_tag }}
+      #     tags: litmuschaos/experiment-alpine:${{ github.event.inputs.release_tag }},litmuschaos/experiment-alpine:latest
+
+      # - name: Build and push infra-alpine
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     push: true
+      #     file: custom/hardened-alpine/infra/Dockerfile
+      #     platforms: linux/amd64,linux/arm64
+      #     tags: litmuschaos/infra-alpine:${{ github.event.inputs.release_tag }},litmuschaos/infra-alpine:latest
+
+      - name: Build and push k8s
         uses: docker/build-push-action@v2
-        env:
-          RELEASE_TAG: ${{ needs.get-envs.outputs.RELEASE_TAG }}
         with:
           push: true
-          file: ./litmus-portal/graphql-server/Dockerfile
-          context: ./litmus-portal/graphql-server
-          platforms: ${{ secrets.PLATFORMS }}
-          tags: ${{ secrets.REPONAME }}/${{ env.GRAPHQL_SERVER_IMAGE }}:${{ env.RELEASE_TAG }}
+          file: custom/k8s/Dockerfile
+          context: custom/k8s
+          platforms: linux/amd64,linux/arm64
+          tags: jonsy13/k8s:${{ github.event.inputs.release_tag }},jonsy13/k8s:latest
 
-  docker-build-and-push-authentication-server:
-    runs-on: ubuntu-latest
-    needs:
-      - get-envs
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-        with:
-          platforms: all
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push
+      - name: Build and push curl
         uses: docker/build-push-action@v2
-        env:
-          RELEASE_TAG: ${{ needs.get-envs.outputs.RELEASE_TAG }}
         with:
           push: true
-          file: ./litmus-portal/authentication/Dockerfile
-          context: ./litmus-portal/authentication
-          platforms: ${{ secrets.PLATFORMS }}
-          tags: ${{ secrets.REPONAME }}/${{ env.AUTHENTICATION_SERVER_IMAGE }}:${{ env.RELEASE_TAG }}
+          file: custom/curl/Dockerfile
+          context: custom/curl
+          platforms: linux/amd64,linux/arm64
+          tags: jonsy13/curl:${{ github.event.inputs.release_tag }},jonsy13/curl:latest
 
-  docker-build-and-push-subscriber:
-    runs-on: ubuntu-latest
-    needs:
-      - get-envs
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-        with:
-          platforms: all
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push
+      - name: Build and push litmus-checker
         uses: docker/build-push-action@v2
-        env:
-          RELEASE_TAG: ${{ needs.get-envs.outputs.RELEASE_TAG }}
         with:
           push: true
-          file: ./litmus-portal/cluster-agents/subscriber/Dockerfile
-          context: ./litmus-portal/cluster-agents/subscriber
-          platforms: ${{ secrets.PLATFORMS }}
-          tags: ${{ secrets.REPONAME }}/${{ env.SUBSCRIBER_IMAGE }}:${{ env.RELEASE_TAG }}
+          file: custom/litmus-checker/Dockerfile
+          context: custom/litmus-checker
+          platforms: linux/amd64,linux/arm64
+          tags: jonsy13/litmus-checker:${{ github.event.inputs.release_tag }},jonsy13/litmus-checker:latest
 
-  docker-build-and-push-event-tracker:
-    runs-on: ubuntu-latest
-    needs:
-      - get-envs
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-        with:
-          platforms: all
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push
+      - name: Build and push litmus-app-deployer
         uses: docker/build-push-action@v2
-        env:
-          RELEASE_TAG: ${{ needs.get-envs.outputs.RELEASE_TAG }}
         with:
           push: true
-          file: ./litmus-portal/cluster-agents/event-tracker/Dockerfile
-          context: ./litmus-portal/cluster-agents/event-tracker
-          platforms: ${{ secrets.PLATFORMS }}
-          tags: ${{ secrets.REPONAME }}/${{ env.EVENT_TRACKER }}:${{ env.RELEASE_TAG }}
+          file: custom/litmus-app-deployer/Dockerfile
+          context: custom/litmus-app-deployer
+          platforms: linux/amd64,linux/arm64
+          tags: jonsy13/litmus-app-deployer:${{ github.event.inputs.release_tag }},jonsy13/litmus-app-deployer:latest
 
-  docker-build-and-push-upgrade-agent-cp:
-    runs-on: ubuntu-latest
-    needs:
-      - get-envs
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-        with:
-          platforms: all
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push
+      - name: Build and push litmus-git-app-deployer
         uses: docker/build-push-action@v2
-        env:
-          RELEASE_TAG: ${{ needs.get-envs.outputs.RELEASE_TAG }}
         with:
           push: true
-          file: ./litmus-portal/upgrade-agents/control-plane/Dockerfile
-          context: ./litmus-portal/upgrade-agents/control-plane
-          platforms: ${{ secrets.PLATFORMS }}
-          tags: ${{ secrets.REPONAME }}/${{ env.UPGRADE_AGENT_CP }}:${{ env.RELEASE_TAG }}
-
-  ## TODO: the build time for multiarch frontend image is higher so it is used in the release
-  ## builds only need to optimize the build duration and also add it with ci tag
-  ## Build and push / base path
-  docker-build-and-push-frontend:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        frontend:
-          [
-            { "image_name": "clc-frontend", "path": "" },
-            {
-              "image_name": "clc-frontend-path-litmuschaos",
-              "path": "/litmuschaos",
-            },
-          ]
-    needs:
-      - get-envs
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-        with:
-          platforms: all
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        env:
-          RELEASE_TAG: ${{ needs.get-envs.outputs.RELEASE_TAG }}
-          TIME_STAMP: ${{ needs.get-envs.outputs.TIME_STAMP }}
-        with:
-          push: true
-          file: ./litmus-portal/frontend/Dockerfile
-          context: ./litmus-portal/frontend
-          platforms: linux/amd64
-          build-args: |
-            REACT_APP_KB_CHAOS_VERSION=${{ env.RELEASE_TAG }}
-            REACT_APP_BUILD_TIME=${{ env.TIME_STAMP }}
-            PUBLIC_URL=${{ matrix.frontend.path }}
-            REACT_APP_CAPTCHA_SITE_KEY=${{ secrets.REACT_APP_MASTER_CAPTCHA_SITE_KEY }}
-          tags: |
-            ${{ secrets.REPONAME }}/${{ matrix.frontend.image_name }}:${{ env.RELEASE_TAG }}
+          file: custom/litmus-git-app-checker/Dockerfile
+          context: custom/litmus-git-app-checker
+          platforms: linux/amd64,linux/arm64
+          tags: jonsy13/litmus-git-app-checker:${{ github.event.inputs.release_tag }},jonsy13/litmus-git-app-checker:latest
