@@ -86,6 +86,27 @@ jobs:
     if: contains(github.event.comment.html_url, '/pull/') && startsWith(github.event.comment.body, '/run-e2e')
     needs: [find-latest-commit-sha, docker-build-image]
     runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        TestTag:
+          - login
+          - getstarted
+          - account-settings
+          - teaming
+          - users-management
+          - custom-workflow-scheduling
+          - template-workflow-scheduling
+          - predefined-workflow-scheduling
+          - recurring-workflow-scheduling
+          - upload-workflow-scheduling
+          - gitops-workflow-scheduling
+          - workflow-scheduling-crud-ops
+          - data-source
+          - myhub
+          - routing
+          - workflow-stats
+
     steps:
       - uses: actions/checkout@v2
         with:
@@ -97,7 +118,6 @@ jobs:
         with:
           repository: jonsy13/e2e-test
           path: litmus-e2e
-
       - uses: AbsaOSS/k3d-action@v2
         name: Create k3d cluster
         with:
@@ -143,6 +163,7 @@ jobs:
 
       # Fetching Access Point & Token for accessing kube api server
       - name: Configuring Kube-Api server
+        if: contains( matrix.TestTag , "scheduling") || contains( matrix.TestTag , "datasource") || contains( matrix.TestTag , "dashboard")
         run: |
           kubectl config view -o jsonpath='{"Cluster name\tServer\n"}{range .clusters[*]}{.name}{"\t"}{.cluster.server}{"\n"}{end}'
           export CLUSTER_NAME=k3d-self-agent
@@ -152,6 +173,7 @@ jobs:
           echo "KUBE_API_TOKEN=$KUBE_API_TOKEN" >> $GITHUB_ENV
 
       - name: Deploying Prometheus as a DataSource
+        if: contains( matrix.TestTag , "scheduling") || contains( matrix.TestTag , "datasource") || contains( matrix.TestTag , "dashboard")
         run: |
           cd monitoring
           kubectl create ns monitoring
@@ -167,50 +189,29 @@ jobs:
 
       # RBAC for allowing Cypress Runner to access Cluster resources
       - name: Setting RBAC for Cypress for running e2e tests
+        if: contains( matrix.TestTag , "scheduling") || contains( matrix.TestTag , "datasource") || contains( matrix.TestTag , "dashboard")
         run: |
           kubectl apply -f ./litmus-e2e/Cypress/cypress-rbac.yml
 
-      - name: Running basic tests (Login and Onboarding Tests)
+      - name: Running tests with tag -> ${{ matrix.TestTag }}
         uses: cypress-io/github-action@v2
         continue-on-error: false
         with:
-          spec: cypress/integration/Basic_Setup/**/*.spec.js
-          working-directory: Cypress/
+          working-directory: litmus-e2e/Cypress/
           config-file: cypress.prod.json
           env: true
         env:
           CYPRESS_BASE_URL: ${{ env.URL }}
-
-      - name: Verifying the execution-plane components
-        if: always()
-        run: |
-          kubectl config use-context k3d-self-agent
-          source ./litmus/utils.sh
-          verify_all_components ${COMPONENTS} ${NAMESPACE}
-          wait_for_pods ${NAMESPACE} 720
-        env:
-          COMPONENTS: subscriber,chaos-exporter,chaos-operator-ce,event-tracker,workflow-controller
-          NAMESPACE: litmus
-
-      - name: Running Post-Authentication Tests
-        uses: cypress-io/github-action@v2
-        if: always()
-        continue-on-error: false
-        with:
-          spec: cypress/integration/Parallel_Tests/**/*.spec.js
-          working-directory: Cypress/
-          config-file: cypress.prod.json
-          env: true
-        env:
-          CYPRESS_BASE_URL: ${{ env.URL }}
+          CYPRESS_INCLUDE_TAGS: ${{ matrix.TestTag }}
           CYPRESS_KUBE_API_TOKEN: ${{ env.KUBE_API_TOKEN }}
-          CYPRESS_KUBE_API_SERVER: ${{ env.KUBE_API_SERVER}}
+          CYPRESS_KUBE_API_SERVER: ${{ env.KUBE_API_SERVER }}
           CYPRESS_AGENT_NAMESPACE: "litmus"
           CYPRESS_AGENT: "Self-Agent"
           CYPRESS_TARGET_APP_NS: "default"
           CYPRESS_DATA_SOURCE_URL: ${{ env.DATA_SOURCE_URL }}
 
       - name: Check the test run
+        if: startsWith(github.event.comment.body, '/run-e2e')
         run: |
           echo "TEST_RUN=true" >> $GITHUB_ENV
 
@@ -249,3 +250,7 @@ jobs:
           reactions: eyes
         env:
           RUN_ID: ${{ github.run_id }}
+
+      - name: Deleting KinD cluster
+        if: always()
+        run: kind delete cluster
