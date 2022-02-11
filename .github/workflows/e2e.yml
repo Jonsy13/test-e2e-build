@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+env:
+  DOCKER_BUILDKIT: 1 # Enable Docker_buildkit in all build jobs
+
 jobs:
   # Job for finding last commit sha of pull-request
   find-latest-commit-sha:
