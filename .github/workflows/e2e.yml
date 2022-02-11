@@ -95,7 +95,7 @@ jobs:
       - name: Checkout litmus-E2E Repository
         uses: actions/checkout@v2
         with:
-          repository: jonsy13/e2e-test
+          repository: litmuschaos/litmus-e2e
           path: litmus-e2e
 
       - uses: AbsaOSS/k3d-action@v2
@@ -153,12 +153,11 @@ jobs:
 
       - name: Deploying Prometheus as a DataSource
         run: |
-          cd monitoring
           kubectl create ns monitoring
-          kubectl -n monitoring apply -f utils/prometheus/prometheus-scrape-configuration/
-          kubectl -n monitoring apply -f utils/metrics-exporters/node-exporter/
-          kubectl -n monitoring apply -f utils/metrics-exporters/kube-state-metrics/
-          source ../litmus-e2e/litmus/utils.sh
+          kubectl -n monitoring apply -f monitoring/utils/prometheus/prometheus-scrape-configuration/
+          kubectl -n monitoring apply -f monitoring/utils/metrics-exporters/node-exporter/
+          kubectl -n monitoring apply -f monitoring/utils/metrics-exporters/kube-state-metrics/
+          source ./litmus-e2e/litmus/utils.sh
           wait_for_pods monitoring 720
           wait_for_loadbalancer prometheus-k8s monitoring
           loadBalancerIP=$(kubectl get services prometheus-k8s -n monitoring -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
@@ -175,7 +174,7 @@ jobs:
         continue-on-error: false
         with:
           spec: cypress/integration/Basic_Setup/**/*.spec.js
-          working-directory: Cypress/
+          working-directory: ./litmus-e2e/Cypress/
           config-file: cypress.prod.json
           env: true
         env:
@@ -184,8 +183,7 @@ jobs:
       - name: Verifying the execution-plane components
         if: always()
         run: |
-          kubectl config use-context k3d-self-agent
-          source ./litmus/utils.sh
+          source ./litmus-e2e/litmus/utils.sh
           verify_all_components ${COMPONENTS} ${NAMESPACE}
           wait_for_pods ${NAMESPACE} 720
         env:
@@ -198,7 +196,7 @@ jobs:
         continue-on-error: false
         with:
           spec: cypress/integration/Parallel_Tests/**/*.spec.js
-          working-directory: Cypress/
+          working-directory: ./litmus-e2e/Cypress/
           config-file: cypress.prod.json
           env: true
         env:
