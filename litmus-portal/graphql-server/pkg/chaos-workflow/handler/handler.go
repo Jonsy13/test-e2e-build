@@ -165,7 +165,7 @@ func UpdateWorkflow(ctx context.Context, input *model.ChaosWorkFlowInput, r *sto
 	}, nil
 }
 
-// QueryWorkflowRuns sends all the workflow runs for a project from the DB
+// QueryWorkflowRuns sends all the work
 func QueryWorkflowRuns(input model.GetWorkflowRunsInput) (*model.GetWorkflowsOutput, error) {
 	var pipeline mongo.Pipeline
 
