@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	v2_6_0 "github.com/litmuschaos/litmus/litmus-portal/upgrader-agents/control-plane/versions/v2.6.0"
+
 	v2_4_0 "github.com/litmuschaos/litmus/litmus-portal/upgrader-agents/control-plane/versions/v2.4.0"
 
 	"github.com/litmuschaos/litmus/litmus-portal/upgrader-agents/control-plane/pkg/database"
@@ -59,8 +61,24 @@ func (m *UpgradeManager) getUpgradePath() map[string]UpgradeExecutor {
 			NextVersion:    "2.4.0",
 			VersionManager: v2_4_0.NewVersionManger(m.Logger, m.DBClient),
 		},
-		// latest version no more upgrades available
+
 		"2.4.0": {
+			NextVersion:    "2.5.0",
+			VersionManager: nil,
+		},
+
+		"2.5.0": {
+			NextVersion:    "2.6.0",
+			VersionManager: v2_6_0.NewVersionManger(m.Logger, m.DBClient),
+		},
+
+		"2.6.0": {
+			NextVersion:    "2.7.0",
+			VersionManager: nil,
+		},
+
+		// latest version no more upgrades available
+		"2.7.0": {
 			NextVersion:    "",
 			VersionManager: nil,
 		},
@@ -103,8 +121,11 @@ func (m *UpgradeManager) Run() error {
 	versionIterator := m.PreviousVersion
 	// loop till the target version is reached
 	for versionIterator != m.TargetVersion {
-		if err := upgradePath[versionIterator].VersionManager.Run(); err != nil {
-			return fmt.Errorf("failed to upgrade to version %v, error : %w", versionIterator, err)
+		// Skipping schema upgrade, if version manager not available (Only version will be upgraded)
+		if upgradePath[versionIterator].VersionManager != nil {
+			if err := upgradePath[versionIterator].VersionManager.Run(); err != nil {
+				return fmt.Errorf("failed to upgrade to version %v, error : %w", versionIterator, err)
+			}
 		}
 		versionIterator = upgradePath[versionIterator].NextVersion
 	}

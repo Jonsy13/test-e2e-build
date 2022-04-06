@@ -44,6 +44,7 @@ const TableData: React.FC<TableDataProps> = ({ data, alertStateHandler }) => {
   const [openModal, setOpenModal] = React.useState(false);
   const [dashboardSelectedForDeleting, setDashboardSelectedForDeleting] =
     React.useState<DeleteDashboardInput>({
+      projectID: '',
       dbID: '',
     });
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -177,7 +178,10 @@ const TableData: React.FC<TableDataProps> = ({ data, alertStateHandler }) => {
   useEffect(() => {
     if (mutate === true) {
       deleteDashboard({
-        variables: { dbID: dashboardSelectedForDeleting.dbID },
+        variables: {
+          projectID: getProjectID(),
+          dbID: dashboardSelectedForDeleting.dbID,
+        },
       });
     }
   }, [mutate]);
@@ -353,6 +357,7 @@ const TableData: React.FC<TableDataProps> = ({ data, alertStateHandler }) => {
             value="Delete"
             onClick={() => {
               setDashboardSelectedForDeleting({
+                projectID: getProjectID(),
                 dbID: data.db_id,
               });
               setOpenModal(true);
@@ -381,6 +386,7 @@ const TableData: React.FC<TableDataProps> = ({ data, alertStateHandler }) => {
         onClose={() => setOpenModal(false)}
         width="45%"
         height="fit-content"
+        data-cy="removeDashboardModal"
       >
         <div className={classes.modal}>
           <Typography className={classes.modalHeading} align="left">
@@ -399,7 +405,10 @@ const TableData: React.FC<TableDataProps> = ({ data, alertStateHandler }) => {
             ?
           </Typography>
 
-          <div className={classes.flexButtons}>
+          <div
+            className={classes.flexButtons}
+            data-cy="removeDashboardModalButtons"
+          >
             <TextButton
               onClick={() => setOpenModal(false)}
               className={classes.cancelButton}

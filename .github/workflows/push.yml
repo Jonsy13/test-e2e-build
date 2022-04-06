@@ -24,7 +24,7 @@ jobs:
           make backend-services-checks
 
   frontend-checks:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -45,7 +45,7 @@ jobs:
               img_tag=${GITHUB_REF#refs/*/}
           else
               echo "non tag build"
-              img_tag="tun"
+              img_tag="ci"
           fi
           # This is a condition where image tag looks like "pull/<pullrequest-name>" during pull request build
           NEW_IMG_TAG=`echo $img_tag | sed "s/\//-/g"`
@@ -298,7 +298,7 @@ jobs:
       - name: Push frontend docker image ( ${{ matrix.frontend.image_name }} )
         env:
           IMG_TAG: ${IMG_TAG}
-          PLATFORMS: linux/amd64
+          PLATFORMS: ${{ secrets.PLATFORMS }}
           REPONAME: ${{ secrets.REPONAME }}
           timestamp: ${timestamp}
           PUBLIC_URL: ${{ matrix.frontend.path }}
