@@ -26,7 +26,7 @@ on:
 
 jobs:
   chaos-center-components:
-    if: ${{ github.event.inputs.enable_chaoscenter_tag }}
+    if: ${{ github.event.inputs.chaoscenter_tag }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -42,12 +42,13 @@ jobs:
         name: Push Image to multiple registries
         uses: akhilerm/tag-push-action@v2.0.0
         with:
-          src: docker.io/chaosnative/${{ matrix.components }}:${{ github.event.inputs.chaoscenter_tag }}
+          src: docker.io/chaosnative/${{ matrix.component }}:${{ github.event.inputs.chaoscenter_tag }}
           dst: |
-              ${{ github.event.inputs.target_registry_server }}/${{ github.event.inputs.target_repo_name }}/${{ matrix.components }}:${{ github.event.inputs.chaoscenter_tag }}
+              ${{ github.event.inputs.target_registry_server }}/${{ github.event.inputs.target_repo_name }}/${{ matrix.component }}:${{ github.event.inputs.chaoscenter_tag }}
 
   core-components:
     runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.core_tag }}
     strategy:
       matrix:
         component: ["chaos-operator","chaos-runner","chaos-exporter","go-runner","k8s","litmus-checker","curl"]
@@ -62,12 +63,13 @@ jobs:
         name: Push Image to multiple registries
         uses: akhilerm/tag-push-action@v2.0.0
         with:
-          src: docker.io/litmuschaos/${{ matrix.components }}:${{ github.event.inputs.core_tag }}
+          src: docker.io/litmuschaos/${{ matrix.component }}:${{ github.event.inputs.core_tag }}
           dst: |
-              ${{ github.event.inputs.target_registry_server }}/${{ github.event.inputs.target_repo_name }}/${{ matrix.components }}:${{ github.event.inputs.core_tag }}
+              ${{ github.event.inputs.target_registry_server }}/${{ github.event.inputs.target_repo_name }}/${{ matrix.component }}:${{ github.event.inputs.core_tag }}
 
   argo-components:
     runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.argo_tag }}
     strategy:
       matrix:
         component: ["workflow-controller","argoexec"]
@@ -82,12 +84,13 @@ jobs:
         name: Push Image to multiple registries
         uses: akhilerm/tag-push-action@v2.0.0
         with:
-          src: docker.io/litmuschaos/${{ matrix.components }}:${{ github.event.inputs.argo_tag }}
+          src: docker.io/litmuschaos/${{ matrix.component }}:${{ github.event.inputs.argo_tag }}
           dst: |
-              ${{ github.event.inputs.target_registry_server }}/${{ github.event.inputs.target_repo_name }}/${{ matrix.components }}:${{ github.event.inputs.argo_tag }}
+              ${{ github.event.inputs.target_registry_server }}/${{ github.event.inputs.target_repo_name }}/${{ matrix.component }}:${{ github.event.inputs.argo_tag }}
 
   mongoDB:
     runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.mongodb_tag }}
     strategy:
       matrix:
         component: ["mongo"]
@@ -102,7 +105,7 @@ jobs:
         name: Push Image to multiple registries
         uses: akhilerm/tag-push-action@v2.0.0
         with:
-          src: docker.io/litmuschaos/${{ matrix.components }}:${{ github.event.inputs.mongodb_tag }}
+          src: docker.io/litmuschaos/${{ matrix.component }}:${{ github.event.inputs.mongodb_tag }}
           dst: |
-              ${{ github.event.inputs.target_registry_server }}/${{ github.event.inputs.target_repo_name }}/${{ matrix.components }}:${{ github.event.inputs.mongodb_tag }}
+              ${{ github.event.inputs.target_registry_server }}/${{ github.event.inputs.target_repo_name }}/${{ matrix.component }}:${{ github.event.inputs.mongodb_tag }}
 
