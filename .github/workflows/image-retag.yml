@@ -3,14 +3,9 @@ name: Image-Retag-Pipeline
 on:
   workflow_dispatch:
     inputs:
-      enable_chaoscenter_retag: 
-        description: "Whether to retag chaosCenter components (true/false)"
-        required: true
-        type: boolean 
-        default: true
       chaoscenter_tag:
         description: "Tag for Chaoscenter components"
-        required: true
+        required: false
       core_tag:
         description: "Tag for core components & workflow-support images"
         required: true
@@ -31,7 +26,7 @@ on:
 
 jobs:
   chaos-center-components:
-    if: ${{ github.event.inputs.enable_chaoscenter_retag }}
+    if: ${{ github.event.inputs.enable_chaoscenter_tag }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
