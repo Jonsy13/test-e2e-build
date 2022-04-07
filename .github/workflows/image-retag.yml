@@ -1,0 +1,113 @@
+name: Image-Retag-Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_chaoscenter_retag: 
+        description: "Whether to retag chaosCenter components (true/false)"
+        required: true
+        type: boolean 
+        default: true
+      chaoscenter_tag:
+        description: "Tag for Chaoscenter components"
+        required: true
+      core_tag:
+        description: "Tag for core components & workflow-support images"
+        required: true
+      argo_tag:
+        description: "Tag for argo components"
+        required: true
+      mongodb_tag:
+        description: "Tag for mongoDB"
+        required: true
+        default: "4.2.8"
+      target_registry_server:
+        description: "Target registry server for e.g. docker.io"
+        required: false
+        default: "docker.io"
+      target_repo_name:
+        description: "Target repository name for e.g. litmuschaos, chaosnative"
+        required: true
+
+jobs:
+  chaos-center-components:
+    if: ${{ github.event.inputs.enable_chaoscenter_retag }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        component: ["cle-frontend","cle-server","cle-event-tracker","cle-auth-server","cle-subscriber","cle-license-module"]
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - # copy multiplatform images from one registry to another
+        name: Push Image to multiple registries
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: docker.io/chaosnative/${{ matrix.components }}:${{ github.event.inputs.chaoscenter_tag }}
+          dst: |
+              ${{ github.event.inputs.target_registry_server }}/${{ github.event.inputs.target_repo_name }}/${{ matrix.components }}:${{ github.event.inputs.chaoscenter_tag }}
+
+  core-components:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        component: ["chaos-operator","chaos-runner","chaos-exporter","go-runner","k8s","litmus-checker","curl"]
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - # copy multiplatform images from one registry to another
+        name: Push Image to multiple registries
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: docker.io/litmuschaos/${{ matrix.components }}:${{ github.event.inputs.core_tag }}
+          dst: |
+              ${{ github.event.inputs.target_registry_server }}/${{ github.event.inputs.target_repo_name }}/${{ matrix.components }}:${{ github.event.inputs.core_tag }}
+
+  argo-components:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        component: ["workflow-controller","argoexec"]
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - # copy multiplatform images from one registry to another
+        name: Push Image to multiple registries
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: docker.io/litmuschaos/${{ matrix.components }}:${{ github.event.inputs.argo_tag }}
+          dst: |
+              ${{ github.event.inputs.target_registry_server }}/${{ github.event.inputs.target_repo_name }}/${{ matrix.components }}:${{ github.event.inputs.argo_tag }}
+
+  mongoDB:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        component: ["mongo"]
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - # copy multiplatform images from one registry to another
+        name: Push Image to multiple registries
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: docker.io/litmuschaos/${{ matrix.components }}:${{ github.event.inputs.mongodb_tag }}
+          dst: |
+              ${{ github.event.inputs.target_registry_server }}/${{ github.event.inputs.target_repo_name }}/${{ matrix.components }}:${{ github.event.inputs.mongodb_tag }}
+
