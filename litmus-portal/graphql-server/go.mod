@@ -36,6 +36,7 @@ require (
 
 // Pinned to kubernetes-1.21.2
 replace (
+	google.golang.org/grpc => google.golang.org/grpc v1.32.0
 	google.golang.org/protobuf => google.golang.org/protobuf v1.27.1
 	k8s.io/api => k8s.io/api v0.21.2
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.21.2

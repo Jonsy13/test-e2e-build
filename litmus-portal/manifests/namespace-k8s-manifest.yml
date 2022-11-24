@@ -577,7 +577,7 @@ spec:
           emptyDir: {}
       containers:
         - name: graphql-server
-          image: litmuschaos/litmusportal-server:ci
+          image: jonsy13/litmusportal-server:ci
           volumeMounts:
             - mountPath: /tmp/gitops
               name: gitops-storage
@@ -620,13 +620,13 @@ spec:
             - name: CHAOS_CENTER_UI_ENDPOINT
               value: ""
             - name: SUBSCRIBER_IMAGE
-              value: "litmuschaos/litmusportal-subscriber:ci"
+              value: "jonsy13/litmusportal-subscriber:ci"
             - name: EVENT_TRACKER_IMAGE
               value: "litmuschaos/litmusportal-event-tracker:ci"
             - name: ARGO_WORKFLOW_CONTROLLER_IMAGE
-              value: "litmuschaos/workflow-controller:v3.3.1"
+              value: "argoproj/workflow-controller:v3.4.3"
             - name: ARGO_WORKFLOW_EXECUTOR_IMAGE
-              value: "litmuschaos/argoexec:v3.3.1"
+              value: "argoproj/argoexec:v3.4.3"
             - name: LITMUS_CHAOS_OPERATOR_IMAGE
               value: "litmuschaos/chaos-operator:2.14.0"
             - name: LITMUS_CHAOS_RUNNER_IMAGE
@@ -634,7 +634,7 @@ spec:
             - name: LITMUS_CHAOS_EXPORTER_IMAGE
               value: "litmuschaos/chaos-exporter:2.14.0"
             - name: CONTAINER_RUNTIME_EXECUTOR
-              value: "k8sapi"
+              value: "emissary"
             - name: HUB_BRANCH_NAME
               value: "v2.14.x"
             - name: LITMUS_AUTH_GRPC_ENDPOINT
