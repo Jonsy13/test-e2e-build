@@ -28,7 +28,7 @@ require (
 	go.mongodb.org/mongo-driver v1.8.2
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
 	google.golang.org/grpc v1.50.1
-	google.golang.org/protobuf v1.27.1
+	google.golang.org/protobuf v1.28.1
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/apimachinery v0.24.3
 	k8s.io/client-go v12.0.0+incompatible
@@ -36,6 +36,7 @@ require (
 
 // Pinned to kubernetes-1.21.2
 replace (
+	google.golang.org/protobuf => google.golang.org/protobuf v1.27.1
 	k8s.io/api => k8s.io/api v0.21.2
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.21.2
 	k8s.io/apimachinery => k8s.io/apimachinery v0.21.2
