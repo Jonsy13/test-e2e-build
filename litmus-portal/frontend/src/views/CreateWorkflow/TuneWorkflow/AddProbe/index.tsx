@@ -319,7 +319,8 @@ const AddProbe: React.FC<AddProbeProps> = ({
           <div className={classes.detailContainer}>
             <div className={classes.formField}>
               <InputLabel className={classes.formLabel} htmlFor="timeout">
-                {t('createWorkflow.tuneWorkflow.addProbe.labels.timeout')}(sec)
+                {t('createWorkflow.tuneWorkflow.addProbe.labels.timeout')}{' '}
+                {probeData.type === 'httpProbe' ? `(ms)` : `(sec)`}
                 <span className={classes.required}>*</span>
               </InputLabel>
               <InputField
@@ -336,14 +337,12 @@ const AddProbe: React.FC<AddProbeProps> = ({
             <div className={classes.formField}>
               <InputLabel className={classes.formLabel} htmlFor="retry">
                 {t('createWorkflow.tuneWorkflow.addProbe.labels.retry')}(times)
-                <span className={classes.required}>*</span>
               </InputLabel>
               <InputField
                 variant="primary"
                 width="50%"
                 id="retry"
                 name="retry"
-                required
                 type="number"
                 value={runProperties.retry}
                 onChange={handleRunProps}
@@ -413,12 +412,9 @@ const AddProbe: React.FC<AddProbeProps> = ({
                 className={classes.select}
                 variant="outlined"
                 onChange={(e) =>
-                  setProbeData({
-                    ...probeData,
-                    runProperties: {
-                      ...probeData.runProperties,
-                      stopOnFailure: e.target.value === 'true',
-                    },
+                  setRunProperties({
+                    ...runProperties,
+                    stopOnFailure: e.target.value === 'true',
                   })
                 }
                 inputProps={{
